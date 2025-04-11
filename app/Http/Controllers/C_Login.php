@@ -9,7 +9,7 @@ class C_Login extends Controller
 {
     public function masuk()
     {
-        return view('auth.V_login');
+        return view('auth.V_Login');
     }
 
     public function cekData(Request $request)
