@@ -15,6 +15,10 @@
 
         <!-- Navigation -->
         <div class="flex items-center gap-10">
+            @if($isAdmin)
+                <a href="{{ route('V_Verifikasi') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Verifikasi</a>
+            @endif
+
             {{-- Ngga tampil di dashboard --}}
             @if(!$isDashboard && !$isAdmin)
                 <a href="{{ route('V_Pengajuan') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Pengajuan</a>

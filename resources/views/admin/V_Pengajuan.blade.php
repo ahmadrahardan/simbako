@@ -118,8 +118,8 @@
         <div x-show="showDetailModal" x-cloak x-transition
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div @click.outside="showDetailModal = false"
-                class="bg-white rounded-2xl p-8 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-cover bg-fit bg-center"
-                style="background-image: url('{{ asset('assets/bg_form_2.png') }}')">
+                class="bg-white rounded-2xl p-8 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
 
                 <h2 class="text-2xl font-bold text-center mb-6">Detail Ajuan</h2>
 

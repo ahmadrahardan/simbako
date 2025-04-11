@@ -19,12 +19,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'nama',
+        'username',
         'email',
         'password',
         'telepon',
         'kbli',
         'siinas',
         'alamat',
+        'verifikasi',
     ];
 
     /**
@@ -44,6 +46,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'verifikasi' => 'boolean',
     ];
 
     public function isAdmin()

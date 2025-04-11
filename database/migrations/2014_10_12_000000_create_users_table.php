@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('kbli')->nullable();
             $table->string('alamat')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->boolean('verifikasi')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

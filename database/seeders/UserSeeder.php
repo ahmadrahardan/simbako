@@ -23,6 +23,7 @@ class UserSeeder extends Seeder
             'alamat' => 'Jl. Kalimantan No. 71, Kec. Sumbersari, Kabupaten Jember, Jawa Timur 68121',
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
+            'verifikasi' => true,
         ]);
 
         User::create([
@@ -36,6 +37,7 @@ class UserSeeder extends Seeder
             'alamat' => 'Jl. Brawijaya No. 3, Kec. Sukorambi, Kabupaten Jember, Jawa Timur 68151',
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
+            'verifikasi' => true,
         ]);
 
         User::create([
@@ -49,6 +51,7 @@ class UserSeeder extends Seeder
             'alamat' => 'Jl. Wolter Monginsidi No. 888 A, Kec. Ajung, Kabupaten Jember, Jawa Timur 68175',
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
+            'verifikasi' => false,
         ]);
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\C_Register;
 use App\Http\Controllers\C_Pengajuan;
 use App\Http\Controllers\C_Riwayat;
 use App\Http\Controllers\C_Profil;
+use App\Http\Controllers\C_Verifikasi;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::get('/', function () {
 
 //Route Register
 Route::get('/register', [C_Register::class ,'daftar'])->name('register');
+Route::post('/register', [C_Register::class, 'daftarUser']);
 
 //Route Login
 Route::get('/login', [C_Login::class ,'masuk'])->name('login');
@@ -54,6 +56,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 // Route Riwayat
 Route::get('/riwayat', [C_Riwayat::class, 'riwayat'])->middleware(['auth', 'user'])->name('V_Riwayat');
+
+// Route Verifikasi
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/verifikasi', [C_Verifikasi::class, 'verifikasi'])->name('V_Verifikasi');
+    Route::put('/admin/verifikasi/{id}', [C_Verifikasi::class, 'verifikasiUser']);
+});
 
 // coba
 Route::get('/jadwal', [SomeController::class, 'jadwal'])->name('V_Jadwal');

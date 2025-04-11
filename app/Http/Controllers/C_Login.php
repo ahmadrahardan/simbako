@@ -23,16 +23,22 @@ class C_Login extends Controller
             'password.min' => 'Password minimal 8 karakter!',
         ]);
 
-        $infoLogin = [
-            'username' => $request->username,
-            'password' => $request->password
-        ];
+        $credentials = [
+        'username' => $request->username,
+        'password' => $request->password
+    ];
 
-        if (Auth::attempt($infoLogin)) {
-            $request->session()->regenerate();
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
 
-            return redirect()->route('V_Dashboard');
+        // Tambahkan pengecekan status verifikasi
+        if (!Auth::user()->verifikasi) {
+            Auth::logout(); // keluarin user dari session
+            return redirect('/login')->with('failed', 'Akun Anda belum diverifikasi.');
         }
+
+        return redirect()->route('V_Dashboard');
+    }
 
         return redirect('/login')->with('failed', 'Username atau Password Salah!');
     }
