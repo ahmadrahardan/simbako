@@ -2,7 +2,7 @@
 @section('title', 'Riwayat')
 @section('content')
 
-    <section class="font-sans min-h-screen bg-cover bg-center"
+    <section x-data="pengajuanModal" class="font-sans min-h-screen bg-cover bg-center"
         style="background-image: url({{ asset('assets/background_1.png') }})">
 
         <!-- Header -->
@@ -31,27 +31,37 @@
                                 <tr class="hover:bg-white/10 transition">
                                     <td class="p-3">{{ $index + 1 }}</td>
                                     <td class="p-3">
-                                        <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-md text-sm">
+                                        <div
+                                            class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-md text-sm flex items-center justify-center">
                                             {{ $item->created_at->format('d-m-Y') }}
                                         </div>
                                     </td>
                                     <td class="p-3">{{ $item->id }}</td> {{-- atau $item->kode jika ada --}}
-                                    <td class="p-3 flex items-center gap-2">
-                                        @php
-                                            $warna = match ($item->status) {
-                                                'Disetujui' => 'bg-green-500',
-                                                'Ditolak' => 'bg-red-500',
-                                            };
-                                        @endphp
-                                        <span class="w-3 h-3 rounded-full {{ $warna }}"></span>
-                                        {{ $item->status }}
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-2">
+                                            @php
+                                                $warna = match ($item->status) {
+                                                    'Disetujui' => 'bg-green-500',
+                                                    'Ditolak' => 'bg-red-500',
+                                                };
+                                            @endphp
+                                            <span class="w-3 h-3 rounded-full {{ $warna }}"></span>
+                                            {{ $item->status }}
+                                        </div>
                                     </td>
-                                    <td class="p-3">{{ $item->topik }}</td>
+                                    <td class="p-3 w-50 max-w-[14rem] break-words whitespace-normal">{{ $item->topik }}
+                                    </td>
                                     <td class="p-3 text-center">
-                                        <a href="#"
+                                        <button
+                                            @click="openDetail({
+                                            id: '{{ $item->id }}',
+                                            topik: '{{ $item->topik }}',
+                                            dokumen: '{{ $item->dokumen }}',
+                                            status: '{{ $item->status }}'
+                                        })"
                                             class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
                                             Detail
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -85,7 +95,7 @@
         </div>
 
         <!-- Modal Detail Riwayat -->
-        {{-- <div x-show="showDetailModal" x-cloak x-transition
+        <div x-show="showDetailModal" x-cloak x-transition
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div @click.outside="showDetailModal = false"
                 class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
@@ -106,7 +116,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Dokumen Pendukung</label>
-                        <a :href="'{{ route('dokumen.download', '') }}' + detailPengajuan.dokumen.split('/').pop()"
+                        <a :href="'{{ route('dokumen.download', '') }}/' + detailPengajuan.dokumen.split('/').pop()"
                             target="_blank" download
                             class="block bg-gray-200 px-4 py-2 rounded text-sm text-center hover:bg-gray-300 transition">
                             Download Dokumen
@@ -115,7 +125,13 @@
                     <div>
                         <label class="block text-sm font-semibold mb-1">Status</label>
                         <div class="flex items-center gap-2 mt-1">
-                            <input type="radio" class="form-radio text-blue-500" checked>
+                            <input type="radio" class="form-radio"
+                                :class="{
+                                    'accent-green-600': detailPengajuan.status === 'Disetujui',
+                                    'accent-red-600': detailPengajuan.status === 'Ditolak',
+                                    'accent-blue-500': detailPengajuan.status === 'Proses'
+                                }"
+                                checked>
                             <span x-text="detailPengajuan.status"></span>
                         </div>
                     </div>
@@ -128,12 +144,12 @@
                     </button>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
         {{-- Footer --}}
         @include('master.footer')
     </section>
-    {{-- <script>
+    <script>
         document.addEventListener("alpine:init", () => {
             Alpine.data("pengajuanModal", () => ({
                 showTambahPengajuan: @json($errors->any()),
@@ -155,5 +171,5 @@
             history.replaceState(null, '', location.href);
             location.reload();
         }
-    </script> --}}
+    </script>
 @endsection

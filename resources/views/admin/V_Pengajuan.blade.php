@@ -53,23 +53,27 @@
                                 <tr class="hover:bg-white/10 transition">
                                     <td class="p-3">{{ $index + 1 }}</td>
                                     <td class="p-3">
-                                        <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-md text-sm">
+                                        <div
+                                            class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-md text-sm flex items-center justify-center">
                                             {{ $item->created_at->format('d-m-Y') }}
                                         </div>
                                     </td>
                                     <td class="p-3">{{ $item->id }}</td>
-                                    <td class="p-3 flex items-center gap-2">
-                                        @php
-                                            $warna = match ($item->status) {
-                                                'Proses' => 'bg-blue-500',
-                                                'Disetujui' => 'bg-green-500',
-                                                'Ditolak' => 'bg-red-500',
-                                            };
-                                        @endphp
-                                        <span class="w-3 h-3 rounded-full {{ $warna }}"></span>
-                                        {{ $item->status }}
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-2">
+                                            @php
+                                                $warna = match ($item->status) {
+                                                    'Proses' => 'bg-blue-500',
+                                                    'Disetujui' => 'bg-green-500',
+                                                    'Ditolak' => 'bg-red-500',
+                                                };
+                                            @endphp
+                                            <span class="w-3 h-3 rounded-full {{ $warna }}"></span>
+                                            {{ $item->status }}
+                                        </div>
                                     </td>
-                                    <td class="p-3">{{ $item->topik }}</td>
+                                    <td class="p-3 w-50 max-w-[14rem] break-words whitespace-normal">{{ $item->topik }}
+                                    </td>
                                     <td class="p-3 text-center">
                                         <button
                                             @click="openDetail({
@@ -155,7 +159,8 @@
                     <div class="flex gap-4">
                         <div class="w-1/2">
                             <label class="block text-sm font-semibold mb-1">Dokumen Pendukung</label>
-                            <a :href="'{{ route('dokumen.download', '') }}' + detailPengajuan.dokumen.split('/').pop()" download
+                            <a :href="'{{ route('dokumen.download', '') }}/' + detailPengajuan.dokumen.split('/').pop()"
+                                download
                                 class="block bg-gray-200 px-4 py-2 rounded text-sm text-center hover:bg-gray-300 transition">
                                 Download Dokumen
                             </a>
@@ -165,7 +170,13 @@
                     <div>
                         <label class="block text-sm font-semibold mb-1">Status</label>
                         <div class="flex items-center gap-2 mt-1">
-                            <input type="radio" class="form-radio text-blue-500" checked>
+                            <input type="radio" class="form-radio"
+                                :class="{
+                                    'accent-green-600': detailPengajuan.status === 'Disetujui',
+                                    'accent-red-600': detailPengajuan.status === 'Ditolak',
+                                    'accent-blue-500': detailPengajuan.status === 'Proses'
+                                }"
+                                checked>
                             <span x-text="detailPengajuan.status"></span>
                         </div>
                     </div>

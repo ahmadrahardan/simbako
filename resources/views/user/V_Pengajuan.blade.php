@@ -80,16 +80,20 @@
                                 <tr class="hover:bg-white/10 transition">
                                     <td class="p-3">{{ $index + 1 }}</td>
                                     <td class="p-3">
-                                        <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-md text-sm">
+                                        <div
+                                            class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-md text-sm flex items-center justify-center">
                                             {{ $item->created_at->format('d-m-Y') }}
                                         </div>
                                     </td>
                                     <td class="p-3">{{ $item->id }}</td>
-                                    <td class="p-3 flex items-center gap-2">
-                                        <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                                        {{ $item->status }}
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                                            {{ $item->status }}
+                                        </div>
                                     </td>
-                                    <td class="p-3">{{ $item->topik }}</td>
+                                    <td class="p-3 w-50 max-w-[14rem] break-words whitespace-normal">{{ $item->topik }}
+                                    </td>
                                     <td class="p-3 text-center">
                                         <button
                                             @click="openDetail({
@@ -167,7 +171,8 @@
                         <input type="file" name="dokumen"
                             class="w-full border rounded-lg px-4 py-4 text-center bg-gray-100 file:hidden">
                     </div>
-                    <p class="text-xs text-orange-500 mt-1">*Dokumen dapat berupa proposal PDF, DOC, atau DOCX maksimal 10 MB</p>
+                    <p class="text-xs text-orange-500 mt-1">*Dokumen dapat berupa proposal PDF, DOC, atau DOCX maksimal 10
+                        MB</p>
 
                     <div class="flex justify-between mt-6">
                         <button type="button" @click="showTambahPengajuan = false"
@@ -205,7 +210,8 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Dokumen Pendukung</label>
-                        <a x-show="detailPengajuan.dokumen" :href="'{{ route('dokumen.download', '') }}' + detailPengajuan.dokumen.split('/').pop()" target="_blank" download
+                        <a :href="'{{ route('dokumen.download', '') }}/' + detailPengajuan.dokumen.split('/').pop()"
+                            target="_blank" download
                             class="block bg-gray-200 px-4 py-2 rounded text-sm text-center hover:bg-gray-300 transition">
                             Download Dokumen
                         </a>
@@ -213,7 +219,13 @@
                     <div>
                         <label class="block text-sm font-semibold mb-1">Status</label>
                         <div class="flex items-center gap-2 mt-1">
-                            <input type="radio" class="form-radio text-blue-500" checked>
+                            <input type="radio" class="form-radio"
+                                :class="{
+                                    'accent-green-600': detailPengajuan.status === 'Disetujui',
+                                    'accent-red-600': detailPengajuan.status === 'Ditolak',
+                                    'accent-blue-500': detailPengajuan.status === 'Proses'
+                                }"
+                                checked>
                             <span x-text="detailPengajuan.status"></span>
                         </div>
                     </div>
