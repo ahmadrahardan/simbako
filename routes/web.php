@@ -7,6 +7,7 @@ use App\Http\Controllers\C_Pengajuan;
 use App\Http\Controllers\C_Riwayat;
 use App\Http\Controllers\C_Profil;
 use App\Http\Controllers\C_Verifikasi;
+use App\Http\Controllers\DokumenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +63,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/verifikasi', [C_Verifikasi::class, 'verifikasi'])->name('V_Verifikasi');
     Route::put('/admin/verifikasi/{id}', [C_Verifikasi::class, 'verifikasiUser']);
 });
+
+// Route Download
+Route::get('/dokumen/download/{filename}', [DokumenController::class, 'download'])->name('dokumen.download');
 
 // coba
 Route::get('/jadwal', [SomeController::class, 'jadwal'])->name('V_Jadwal');

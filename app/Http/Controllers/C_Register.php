@@ -19,11 +19,11 @@ class C_Register extends Controller
             'nama' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'email' => 'required|email|unique:users,email',
-            'telepon' => 'required|string|min:10|max:20',
-            'kbli' => 'required|string|max:100',
-            'siinas' => 'required|string|max:100',
+            'telepon' => 'required|digits:12',
+            'kbli' => 'required|digits:5',
+            'siinas' => 'required|digits:17',
             'alamat' => 'required|string|max:255',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:8|confirmed',
         ];
 
         $messages = [
@@ -34,12 +34,15 @@ class C_Register extends Controller
             'email.email' => 'Format email tidak valid!',
             'email.unique' => 'Email sudah digunakan!',
             'telepon.required' => 'Nomor telepon belum diisi!',
-            'telepon.min' => 'Nomor telepon terlalu pendek!',
+            'telepon.digits' => 'Nomor telepon harus terdiri dari 12 digit angka!',
             'kbli.required' => 'KBLI wajib diisi!',
+            'kbli.digits'     => 'KBLI harus terdiri dari 5 digit angka!',
             'siinas.required' => 'SIINAS wajib diisi!',
+            'siinas.digits'     => 'SIINAS harus terdiri dari 17 digit angka!',
             'alamat.required' => 'Alamat wajib diisi!',
             'password.required' => 'Password belum terisi!',
             'password.min' => 'Password minimal 8 karakter!',
+            'password.max' => 'Password maksimal 8 karakter!',
             'password.confirmed' => 'Konfirmasi password tidak sesuai!',
         ];
 

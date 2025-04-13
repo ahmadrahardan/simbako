@@ -211,7 +211,7 @@
                     @csrf
                     @if (!Auth::user()->isAdmin())
                         <div>
-                            <label class="block text-sm font-semibold mb-1">Nama<span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold mb-1">Nama</label>
                             <input type="text" name="nama"
                                 class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                                 placeholder="Masukkan Nama">
@@ -224,7 +224,7 @@
                         </div>
                     @endif
                     <div>
-                        <label class="block text-sm font-semibold mb-1">Username<span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold mb-1">Username</label>
                         <input type="text" name="username"
                             class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Masukkan Username">
@@ -242,9 +242,6 @@
                                 class="w-full border border-gray-300 resize-none rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500"></textarea>
                         </div>
                     @endif
-                    <div class="text-xs text-red-500">
-                        *Field wajib diisi.
-                    </div>
 
                     <div class="flex justify-between ">
                         <button type="button" @click="showUbahProfil = false"

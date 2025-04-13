@@ -16,11 +16,10 @@ class C_Login extends Controller
     {
         $request->validate([
             'username' => 'required',
-            'password' => 'required|min:8',
+            'password' => 'required',
         ], [
             'username.required' => 'Username belum terisi!',
             'password.required' => 'Password belum terisi!',
-            'password.min' => 'Password minimal 8 karakter!',
         ]);
 
         $credentials = [

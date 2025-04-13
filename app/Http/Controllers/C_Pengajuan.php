@@ -32,7 +32,7 @@ class C_Pengajuan extends Controller
     {
         $rules = [
             'topik' => 'required|string|max:255',
-            'dokumen' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'dokumen' => 'required|file|mimes:pdf,doc,docx|max:10240',
         ];
 
         $messages = [
@@ -41,7 +41,7 @@ class C_Pengajuan extends Controller
             'dokumen.required' => 'Dokumen harus diunggah!',
             'dokumen.file' => 'Format dokumen tidak valid.',
             'dokumen.mimes' => 'Dokumen harus dalam format PDF, DOC, atau DOCX.',
-            'dokumen.max' => 'Ukuran dokumen maksimal 2MB.',
+            'dokumen.max' => 'Ukuran dokumen maksimal 10MB.',
         ];
 
         $validated = $request->validate($rules, $messages);

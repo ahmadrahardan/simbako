@@ -167,8 +167,7 @@
                         <input type="file" name="dokumen"
                             class="w-full border rounded-lg px-4 py-4 text-center bg-gray-100 file:hidden">
                     </div>
-                    <p class="text-xs text-orange-500 mt-1">*Dokumen dapat berupa proposal pengajuan serta pendukung
-                        lainnya</p>
+                    <p class="text-xs text-orange-500 mt-1">*Dokumen dapat berupa proposal PDF, DOC, atau DOCX maksimal 10 MB</p>
 
                     <div class="flex justify-between mt-6">
                         <button type="button" @click="showTambahPengajuan = false"
@@ -206,9 +205,9 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Dokumen Pendukung</label>
-                        <a :href="'/storage/' + detailPengajuan.dokumen" target="_blank"
+                        <a :href="{{ route('dokumen.download', basename($pengajuan->dokumen)) }}" target="_blank"
                             class="block bg-gray-200 px-4 py-2 rounded text-sm text-center hover:bg-gray-300 transition">
-                            Lihat Dokumen
+                            Download Dokumen
                         </a>
                     </div>
                     <div>

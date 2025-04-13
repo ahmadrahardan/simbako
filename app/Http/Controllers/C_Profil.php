@@ -20,39 +20,55 @@ class C_Profil extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
+        $inputFields = ['username', 'password', 'nama', 'telepon', 'alamat'];
+
+        $filledAny = false;
+        foreach ($inputFields as $field) {
+            if ($request->filled($field)) {
+                $filledAny = true;
+                break;
+            }
+        }
+
+        if (!$filledAny) {
+            return redirect()->back()->withErrors(['form' => 'Tidak ada field yang diisi!'])->withInput();
+        }
+
         $rules = [
-            'username' => 'required|string|max:255',
-            'password' => 'nullable|string|min:8',
+            'username' => 'nullable|string|max:255|unique:users,username,' . $user->id,
+            'password' => 'nullable|string|min:8|max:8',
         ];
 
         if (!$user->isAdmin()) {
             $rules = array_merge($rules, [
-                'nama' => 'required|string|max:255',
-                'telepon' => 'nullable|string|max:20',
+                'nama' => 'nullable|string|max:255',
+                'telepon' => 'nullable|digits:12',
                 'alamat' => 'nullable|string|max:255',
             ]);
         }
 
         $messages = [
-            'username.required' => 'Username belum terisi!',
-            'username.max' => 'Username terlalu panjang!',
+            'username.unique' => 'Username sudah digunakan!',
             'password.min' => 'Password minimal 8 karakter!',
+            'password.max' => 'Password maksimal 8 karakter!',
             'nama.required' => 'Nama belum diisi!',
-            'nama.max' => 'Nama terlalu panjang!',
-            'telepon.max' => 'Nomor telepon terlalu panjang!',
+            'telepon.digits' => 'Nomor telepon harus terdiri dari 12 digit angka!',
             'alamat.max' => 'Alamat terlalu panjang!',
         ];
 
         $validated = $request->validate($rules, $messages);
 
-        $user->username = $validated['username'];
+        if (isset($validated['username'])) {
+            $user->username = $validated['username'];
+        }
 
         if (!$user->isAdmin()) {
-            $user->nama = $validated['nama'];
+            if (isset($validated['nama'])) {
+                $user->nama = $validated['nama'];
+            }
             if ($request->filled('telepon')) {
                 $user->telepon = $validated['telepon'];
             }
-
             if ($request->filled('alamat')) {
                 $user->alamat = $validated['alamat'];
             }
