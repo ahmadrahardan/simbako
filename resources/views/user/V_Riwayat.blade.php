@@ -38,7 +38,7 @@
                                     <td class="p-3">{{ $item->id }}</td> {{-- atau $item->kode jika ada --}}
                                     <td class="p-3 flex items-center gap-2">
                                         @php
-                                            $warna = match($item->status) {
+                                            $warna = match ($item->status) {
                                                 'Disetujui' => 'bg-green-500',
                                                 'Ditolak' => 'bg-red-500',
                                             };
@@ -56,7 +56,8 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="p-3 text-center text-gray-400">Belum ada riwayat pengajuan.</td>
+                                    <td colspan="6" class="p-3 text-center text-gray-400">Belum ada riwayat pengajuan.
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -83,7 +84,76 @@
             </div>
         </div>
 
+        <!-- Modal Detail Riwayat -->
+        {{-- <div x-show="showDetailModal" x-cloak x-transition
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div @click.outside="showDetailModal = false"
+                class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/bg_form_2.png') }}')">
+
+                <h2 class="text-2xl font-bold text-center mb-6">Detail Ajuan</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">ID Pengajuan</label>
+                        <input type="text" x-model="detailPengajuan.id" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Topik</label>
+                        <input type="text" x-model="detailPengajuan.topik" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Dokumen Pendukung</label>
+                        <a :href="'{{ route('dokumen.download', '') }}' + detailPengajuan.dokumen.split('/').pop()"
+                            target="_blank" download
+                            class="block bg-gray-200 px-4 py-2 rounded text-sm text-center hover:bg-gray-300 transition">
+                            Download Dokumen
+                        </a>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Status</label>
+                        <div class="flex items-center gap-2 mt-1">
+                            <input type="radio" class="form-radio text-blue-500" checked>
+                            <span x-text="detailPengajuan.status"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button @click="showDetailModal = false"
+                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div> --}}
+
         {{-- Footer --}}
         @include('master.footer')
     </section>
+    {{-- <script>
+        document.addEventListener("alpine:init", () => {
+            Alpine.data("pengajuanModal", () => ({
+                showTambahPengajuan: @json($errors->any()),
+                showDetailModal: false,
+                detailPengajuan: {
+                    id: '',
+                    topik: '',
+                    dokumen: '',
+                    status: '',
+                },
+                openDetail(data) {
+                    this.detailPengajuan = data;
+                    this.showDetailModal = true;
+                }
+            }))
+        });
+
+        if (performance.getEntriesByType("navigation")[0].type === "back_forward") {
+            history.replaceState(null, '', location.href);
+            location.reload();
+        }
+    </script> --}}
 @endsection
