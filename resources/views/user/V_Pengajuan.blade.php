@@ -205,7 +205,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Dokumen Pendukung</label>
-                        <a :href="{{ route('dokumen.download', basename($pengajuan->dokumen)) }}" target="_blank"
+                        <a :href="'{{ route('dokumen.download', '') }}' + detailPengajuan.dokumen.split('/').pop()" target="_blank" download
                             class="block bg-gray-200 px-4 py-2 rounded text-sm text-center hover:bg-gray-300 transition">
                             Download Dokumen
                         </a>
