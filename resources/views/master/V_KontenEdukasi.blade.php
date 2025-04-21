@@ -25,33 +25,39 @@
                     <!-- Tanggal -->
                     <div
                         class="absolute top-0 right-0 mt-4 mr-4 bg-white/20 text-sm text-gray-100 px-3 py-1 rounded-md backdrop-blur">
-                        02-03-2025
+                        {{ $edukasi->created_at->diffForHumans() }}
                     </div>
 
                     <!-- Judul -->
                     <h2 class="text-center text-xl font-semibold mt-12">
-                        Cara Melinting Rokok Kretek
+                        {{ $edukasi->topik }}
                     </h2>
 
                     <!-- Isi Paragraf -->
                     <p class="mt-4 text-justify text-sm leading-relaxed text-white/90">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit quo provident magni! Ad impedit pariatur iusto culpa amet soluta ullam nihil cum dolore? Quasi laboriosam alias quidem atque expedita qui impedit repellendus reprehenderit, minus hic possimus eius illo excepturi officia praesentium error quod aspernatur corporis. At totam nihil harum vero eveniet officiis reiciendis suscipit quae explicabo, ipsam, doloribus, cumque qui! Maxime possimus itaque cupiditate esse dolor neque assumenda ex rerum deleniti, tempora in odio obcaecati et omnis, sed nemo amet ipsum, impedit eius. Debitis aliquam dolorum nihil quas veritatis doloribus quidem labore quod molestiae. Exercitationem nihil corrupti, dolorum dolores nostrum quisquam harum voluptatum commodi deleniti soluta doloremque dicta illum pariatur voluptatibus officia? Deleniti tenetur saepe omnis voluptates repellendus! Consequatur optio, suscipit ipsum officiis magni quos doloremque necessitatibus esse error illo saepe dolores nemo quasi exercitationem accusantium qui quas nisi, repudiandae harum provident itaque sequi quae? Cumque culpa consequuntur voluptatibus suscipit reiciendis molestias voluptates nemo vel deserunt qui dolores enim alias voluptas tempora provident, cum reprehenderit velit quae debitis accusamus ab autem. Impedit nam cum, maxime soluta fugit cupiditate expedita voluptatem tempora explicabo aperiam sapiente eveniet omnis asperiores cumque laudantium ab aliquid, quasi ut et vel deserunt provident quae veritatis. Tenetur minima recusandae dolor sequi, atque reiciendis, culpa consequuntur ad mollitia, exercitationem illo optio sunt distinctio veritatis totam nobis. Doloremque similique quidem tempore molestiae nostrum quae ad deleniti hic non eaque, earum quos mollitia omnis voluptates veritatis, officiis exercitationem ab deserunt animi dicta consequuntur molestias voluptate. Optio voluptates aliquid dolore obcaecati vel architecto est repellendus odio ratione asperiores, aut sequi necessitatibus repellat hic corrupti tempore perferendis, veniam nam facilis nostrum porro et voluptate delectus tenetur? Eos, quam culpa quos distinctio repellat, a non necessitatibus ea fugit maxime saepe incidunt laudantium doloribus, dolor voluptatibus at dolores placeat. Obcaecati consequuntur quis error deserunt.
+                        {!! nl2br(e(file_get_contents(public_path($edukasi->konten)))) !!}
                     </p>
 
-                    <!-- Video Preview -->
-                    <div class="flex justify-center mt-6">
-                        <div
-                            class="relative w-[320px] h-[180px] rounded-2xl overflow-hidden border border-white/30 bg-white/10 backdrop-blur">
-                            <img src="{{ asset('assets/cigar.png') }}" alt="Video Thumbnail"
-                                class="w-full h-full object-cover">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div
-                                    class="w-14 h-14 bg-white/30 rounded-full flex items-center justify-center hover:bg-white/50 transition">
-                                    <i class="fa fa-play text-white text-2xl"></i>
-                                </div>
-                            </div>
+                    @php
+                        function youtubeEmbed($url)
+                        {
+                            if (Str::contains($url, 'watch?v=')) {
+                                return Str::replace('watch?v=', 'embed/', $url);
+                            } elseif (Str::contains($url, 'youtu.be/')) {
+                                $id = Str::after($url, 'youtu.be/');
+                                return 'https://www.youtube.com/embed/' . $id;
+                            }
+                            return $url;
+                        }
+                    @endphp
+
+                    @if ($edukasi->link)
+                        <div class="flex justify-center mt-6">
+                            <iframe class="w-[320px] h-[180px] rounded-2xl border border-white/30"
+                                src="{{ youtubeEmbed($edukasi->link) }}" frameborder="0" allowfullscreen>
+                            </iframe>
                         </div>
-                    </div>
+                    @endif
                 </div>
                 <style>
                     /* Scrollbar container */

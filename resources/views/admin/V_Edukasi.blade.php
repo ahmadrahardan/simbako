@@ -73,10 +73,10 @@
                 <div x-ref="scrollContainer" x-init="scrollContainer = $refs.scrollContainer"
                     class="flex gap-5 overflow-x-auto scroll-smooth no-scrollbar w-full py-3 inner_card">
                     @foreach ($data as $item)
-                        <div
+                        <a href="{{ route('edukasi.konten', $item->slug) }}"
                             class="bg-white/10 border border-white/30 backdrop-blur-md rounded-xl p-3 shadow-xl hover:scale-95 transition-transform duration-300 w-[300px] h-[250px] flex-shrink-0">
                             <div class="overflow-hidden rounded-xl">
-                                <img src="{{ asset($item->thumbnail) }}" alt="Gambar Dummy"
+                                <img src="{{ asset($item->thumbnail) }}" alt="{{ $item->topik }}"
                                     class="w-full h-[150px] object-cover">
                             </div>
                             <div class="overflow-hidden">
@@ -84,7 +84,7 @@
                                     {{ $item->topik }}
                                 </p>
                             </div>
-                        </div>
+                        </a>
                     @endforeach
                 </div>
 
@@ -114,7 +114,7 @@
 
                 <h2 class="text-2xl font-bold text-center mb-6">Tambah Edukasi</h2>
 
-                <form action="" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <form action="{{ route('edukasi.simpan') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     <div>
                         <label class="block text-sm font-semibold mb-1">Topik</label>
@@ -124,9 +124,9 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Link Youtube</label>
-                        <input type="text" name="topik"
+                        <input type="text" name="link"
                             class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Topik">
+                            placeholder="Masukkan URL Link">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Thumbnail</label>

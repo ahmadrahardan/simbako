@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('edukasi', function (Blueprint $table) {
             $table->id();
-            $table->string('topik');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('topik');
             $table->string('slug')->unique();
             $table->string('thumbnail');
             $table->string('konten');

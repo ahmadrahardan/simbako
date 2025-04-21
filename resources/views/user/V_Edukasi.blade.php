@@ -27,20 +27,20 @@
                 <!-- Card Slider -->
                 <div x-ref="scrollContainer" x-init="scrollContainer = $refs.scrollContainer"
                     class="flex gap-5 overflow-x-auto scroll-smooth no-scrollbar w-full py-3 inner_card">
-                    @for ($i = 0; $i < 12; $i++)
-                        <div
+                    @foreach ($data as $item)
+                        <a href="{{ route('edukasi.konten', $item->slug) }}"
                             class="bg-white/10 border border-white/30 backdrop-blur-md rounded-xl p-3 shadow-xl hover:scale-95 transition-transform duration-300 w-[300px] h-[250px] flex-shrink-0">
                             <div class="overflow-hidden rounded-xl">
-                                <img src="{{ asset('assets/cigar.png') }}" alt="Gambar Dummy"
+                                <img src="{{ asset($item->thumbnail) }}" alt="{{ $item->topik }}"
                                     class="w-full h-[150px] object-cover">
                             </div>
                             <div class="overflow-hidden">
                                 <p class="text-white text-md text-center mt-2 leading-tight break-words px-3">
-                                    Tutorial Melinting Rokok Kretek hingga Pengemasan berskala Internasional
+                                    {{ $item->topik }}
                                 </p>
                             </div>
-                        </div>
-                    @endfor
+                        </a>
+                        @endforeach
                 </div>
 
                 <!-- Right Scroll Button -->

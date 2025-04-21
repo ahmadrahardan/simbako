@@ -73,6 +73,7 @@ Route::middleware(['auth', 'user'])->group(function () {
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/edukasi', [C_Edukasi::class, 'adminEdukasi'])->name('admin.edukasi');
+    Route::post('/edukasi/simpan', [C_Edukasi::class, 'simpan'])->name('edukasi.simpan');
 });
 
 Route::get('/edukasi/{slug}', [C_Edukasi::class, 'konten'])->middleware(['auth'])->name('edukasi.konten');

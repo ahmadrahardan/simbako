@@ -26,12 +26,12 @@ class EdukasiSeeder extends Seeder
 
         foreach ($topiks as $topik) {
             Edukasi::create([
-                'topik' => $topik,
                 'user_id' => 1,
+                'topik' => $topik,
                 'slug' => Str::slug($topik),
                 'thumbnail' => 'dummy/cigar.png',
                 'konten' => 'dummy/tembakau.txt',
-                'link' => 'https://youtu.be/lqIbNTPyqaI?si=Epiq1bbreZAfNW8U',
+                'link' => 'https://youtu.be/5siYtoCb-00?si=lbSI5Lo0fJwwzHwK',
             ]);
         }
     }

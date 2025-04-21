@@ -15,6 +15,8 @@ class Edukasi extends Model
 
     protected $with = ['author'];
 
+    protected $fillable = ['user_id', 'topik', 'slug', 'thumbnail', 'konten', 'link'];
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
