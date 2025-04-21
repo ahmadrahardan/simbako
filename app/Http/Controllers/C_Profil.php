@@ -42,7 +42,7 @@ class C_Profil extends Controller
         if (!$user->isAdmin()) {
             $rules = array_merge($rules, [
                 'nama' => 'nullable|string|max:255',
-                'telepon' => 'nullable|digits:12',
+                'telepon' => 'nullable|digits:16',
                 'alamat' => 'nullable|string|max:255',
             ]);
         }
@@ -52,7 +52,7 @@ class C_Profil extends Controller
             'password.min' => 'Password minimal 8 karakter!',
             'password.max' => 'Password maksimal 8 karakter!',
             'nama.required' => 'Nama belum diisi!',
-            'telepon.digits' => 'Nomor telepon harus terdiri dari 12 digit angka!',
+            'telepon.digits' => 'Nomor telepon tidak valid!',
             'alamat.max' => 'Alamat terlalu panjang!',
         ];
 

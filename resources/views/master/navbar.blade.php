@@ -20,10 +20,17 @@
             @endif
 
             {{-- Ngga tampil di dashboard --}}
-            @if(!$isDashboard && !$isAdmin)
-                <a href="{{ route('V_Pengajuan') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Pengajuan</a>
-                <a href="{{ route('V_Jadwal') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Jadwal</a>
-                <a href="{{ route('V_Edukasi') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Edukasi</a>
+            @if(!$isDashboard)
+                @if($isAdmin)
+                    <a href="{{ route('admin.pengajuan') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Pengajuan</a>
+                    <a href="{{ route('admin.jadwal') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Jadwal</a>
+                    <a href="{{ route('admin.edukasi') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Edukasi</a>
+                @endif
+                @if(!$isAdmin)
+                    <a href="{{ route('V_Pengajuan') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Pengajuan</a>
+                    <a href="{{ route('V_Jadwal') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Jadwal</a>
+                    <a href="{{ route('V_Edukasi') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Edukasi</a>
+                @endif
             @endif
 
             {{-- Chatbot --}}

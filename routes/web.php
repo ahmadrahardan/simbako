@@ -7,6 +7,9 @@ use App\Http\Controllers\C_Pengajuan;
 use App\Http\Controllers\C_Riwayat;
 use App\Http\Controllers\C_Profil;
 use App\Http\Controllers\C_Verifikasi;
+use App\Http\Controllers\C_Jadwal;
+use App\Http\Controllers\C_Edukasi;
+use App\Http\Controllers\C_Chatbot;
 use App\Http\Controllers\DokumenController;
 
 /*
@@ -21,8 +24,7 @@ use App\Http\Controllers\DokumenController;
 */
 
 Route::get('/', function () {
-    return view('auth.V_Landing');
-})->name('landing');
+    return view('auth.V_Landing');})->name('landing');
 
 //Route Register
 Route::get('/register', [C_Register::class ,'daftar'])->name('register');
@@ -55,6 +57,31 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/pengajuan/update-status/{id}', [C_Pengajuan::class, 'ubahStatus']);
 });
 
+// Route Jadwal
+Route::middleware(['auth', 'user'])->group(function () {
+    Route::get('/jadwal', [C_Jadwal::class, 'jadwal'])->name('V_Jadwal');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/jadwal', [C_Jadwal::class, 'adminJadwal'])->name('admin.jadwal');
+});
+
+// Route Edukasi
+Route::middleware(['auth', 'user'])->group(function () {
+    Route::get('/edukasi', [C_Edukasi::class, 'edukasi'])->name('V_Edukasi');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/edukasi', [C_Edukasi::class, 'adminEdukasi'])->name('admin.edukasi');
+});
+
+Route::get('/edukasi/{slug}', [C_Edukasi::class, 'konten'])->middleware(['auth'])->name('edukasi.konten');
+
+// Route Chatbot
+Route::middleware(['auth', 'user'])->group(function () {
+    Route::get('/chatbot', [C_Chatbot::class, 'chatbot'])->name('V_Chatbot');
+});
+
 // Route Riwayat
 Route::get('/riwayat', [C_Riwayat::class, 'riwayat'])->middleware(['auth', 'user'])->name('V_Riwayat');
 
@@ -68,8 +95,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::get('/dokumen/download/{filename}', [DokumenController::class, 'download'])->name('dokumen.download');
 
 // coba
-Route::get('/jadwal', [SomeController::class, 'jadwal'])->name('V_Jadwal');
-Route::get('/edukasi', [SomeController::class, 'edukasi'])->name('V_Edukasi');
-
-
-
+Route::get('/konten', function () {
+    return view('user.V_KontenEdukasi');});

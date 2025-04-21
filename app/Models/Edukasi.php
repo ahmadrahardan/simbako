@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
 
-class Pengajuan extends Model
+class Edukasi extends Model
 {
     use HasFactory;
 
-    protected $table = 'pengajuan';
+    protected $table = 'edukasi';
 
-    protected $fillable = ['user_id', 'topik', 'dokumen'];
+    protected $with = ['author'];
 
-    public function user(): BelongsTo
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

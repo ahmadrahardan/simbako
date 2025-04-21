@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Edukasi;
 
 class User extends Authenticatable
 {
@@ -54,8 +56,13 @@ class User extends Authenticatable
         return $this->email === 'disperindag@jemberkab.go.id';
     }
 
-    public function pengajuan()
+    public function pengajuan(): HasMany
     {
         return $this->hasMany(Pengajuan::class);
+    }
+
+    public function edukasi(): HasMany
+    {
+        return $this->hasMany(Edukasi::class);
     }
 }

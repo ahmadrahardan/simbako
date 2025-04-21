@@ -34,10 +34,10 @@
                         if ($user && $user->isAdmin()) {
                             if ($item === 'Pengajuan') {
                                 $routeName = 'admin.pengajuan';
-                            // } elseif ($item === 'Jadwal') {
-                            //     $routeName = 'admin.jadwal';
-                            // } elseif ($item === 'Edukasi') {
-                            //     $routeName = 'admin.edukasi';
+                            } elseif ($item === 'Jadwal') {
+                                $routeName = 'admin.jadwal';
+                            } elseif ($item === 'Edukasi') {
+                                $routeName = 'admin.edukasi';
                             }
                         }
                     @endphp
