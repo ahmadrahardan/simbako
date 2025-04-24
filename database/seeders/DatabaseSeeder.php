@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Edukasi;
+use App\Models\Jadwal;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             EdukasiSeeder::class,
+            JadwalSeeder::class,
         ]);
     }
 }

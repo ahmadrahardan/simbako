@@ -13,8 +13,6 @@ class Edukasi extends Model
 
     protected $table = 'edukasi';
 
-    protected $with = ['author'];
-
     protected $fillable = ['user_id', 'topik', 'slug', 'thumbnail', 'konten', 'link'];
 
     public function author(): BelongsTo

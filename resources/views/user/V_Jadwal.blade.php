@@ -2,7 +2,7 @@
 @section('title', 'Jadwal')
 @section('content')
 
-    <section x-data="pengajuanModal" class="font-sans min-h-screen bg-cover bg-center relative"
+    <section x-data="jadwalModal" class="font-sans min-h-screen bg-cover bg-center relative"
         style="background-image: url({{ asset('assets/background_1.png') }})">
 
         <!-- Header -->
@@ -32,26 +32,32 @@
             </div>
 
             <!-- Container Scroll Kartu Pelatihan -->
-            <div class="w-full max-w-5xl h-[250px] overflow-y-auto px-2 custom-scrollbar space-y-4">
-                @for ($i = 0; $i < 3; $i++)
+            <div class="w-full max-w-5xl h-[240px] overflow-y-auto px-2 custom-scrollbar space-y-4">
+                @foreach ($data as $item)
                     <!-- Simulasi 5 card, akan scroll -->
-                    <div class="bg-white/10 border border-white/30 backdrop-blur-md rounded-xl p-5 text-white">
+                    <div class="bg-white/10 border border-white/30 backdrop-blur-md h-[110px] rounded-xl p-5 text-white">
                         <div class="flex items-center justify-between">
                             <div>
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="h-2 w-2 bg-green-500 rounded-full"></span>
-                                    <span class="text-sm text-white/80">Buka</span>
-                                </div>
-                                <h4 class="text-lg font-semibold">Strategi Pemasaran Cerutu Global</h4>
-                                <p class="text-sm text-white/70">Dinas Perindustrian dan Perdagangan Jember</p>
+                                <p class="text-sm text-white/70"><i class="fa fa-calendar mr-1"></i>
+                                    {{ $item->tanggal }}</p>
+                                <h4 class="text-lg font-semibold">{{ $item->topik }}</h4>
+                                <p class="text-sm text-white/70"><i class="fa fa-map-marker mr-1"></i>
+                                    {{ $item->lokasi }}</p>
                             </div>
-                            <a href="#"
-                                class="bg-green-600 hover:bg-green-700 px-4 py-1 rounded-md text-sm font-medium text-white shadow">
+                            <button
+                                @click="openDetail({
+                                    topik: '{{ $item->topik }}',
+                                    deskripsi: '{{ $item->deskripsi }}',
+                                    tanggal: '{{ $item->tanggal }}',
+                                    lokasi: '{{ $item->lokasi }}',
+                                    kuota: '{{ $item->kuota }}'
+                                })"
+                                class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
                                 Detail
-                            </a>
+                            </button>
                         </div>
                     </div>
-                @endfor
+                @endforeach
             </div>
             <style>
                 /* Scrollbar container */
@@ -71,28 +77,79 @@
                     border-radius: 9999px;
                 }
             </style>
-            {{-- @foreach ($pelatihans as $item)
-                <div
-                    class="w-full max-w-5xl bg-white/10 border border-white/30 backdrop-blur-md rounded-xl p-5 mb-4 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="h-2 w-2 bg-green-500 rounded-full"></span>
-                                <span class="text-sm text-white/80">Buka</span>
-                            </div>
-                            <h4 class="text-lg font-semibold">{{ $item->judul }}</h4>
-                            <p class="text-sm text-white/70">{{ $item->penyelenggara }}</p>
-                        </div>
-                        <a href="{{ route('pelatihan.detail', $item->id) }}"
-                            class="bg-green-600 hover:bg-green-700 px-4 py-1 rounded-md text-sm font-medium text-white shadow">
-                            Detail
-                        </a>
+        </div>
+
+        <!-- Modal Detail Jadwal -->
+        <div x-show="showDetailModal" x-cloak x-transition
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div @click.outside="showDetailModal = false"
+                class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/bg_form_2.png') }}')">
+
+                <h2 class="text-2xl font-bold text-center mb-6">Detail Pelatihan</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Topik</label>
+                        <input type="text" x-model="detailJadwal.topik" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Deskripsi</label>
+                        <input type="text" x-model="detailJadwal.deskripsi" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Tanggal</label>
+                        <input type="text" x-model="detailJadwal.tanggal" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Lokasi</label>
+                        <input type="text" x-model="detailJadwal.lokasi" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Kuota</label>
+                        <input type="text" x-model="detailJadwal.kuota" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
                     </div>
                 </div>
-            @endforeach --}}
+
+                <div class="flex justify-end mt-6">
+                    <button @click="showDetailModal = false"
+                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold">
+                        Tutup
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Footer -->
         @include('master.footer')
     </section>
+    <script>
+        document.addEventListener("alpine:init", () => {
+            Alpine.data("jadwalModal", () => ({
+                showTambahPengajuan: @json($errors->any()),
+                showDetailModal: false,
+                detailJadwal: {
+                    topik: '',
+                    deskripsi: '',
+                    tanggal: '',
+                    lokasi: '',
+                    kuota: '',
+                },
+                openDetail(data) {
+                    this.detailJadwal = data;
+                    this.showDetailModal = true;
+                }
+            }))
+        });
+
+        if (performance.getEntriesByType("navigation")[0].type === "back_forward") {
+            history.replaceState(null, '', location.href);
+            location.reload();
+        }
+    </script>
 @endsection

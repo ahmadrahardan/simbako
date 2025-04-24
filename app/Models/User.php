@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Edukasi;
+use App\Models\Pengajuan;
+use App\Models\Jadwal;
 
 class User extends Authenticatable
 {
@@ -64,5 +66,10 @@ class User extends Authenticatable
     public function edukasi(): HasMany
     {
         return $this->hasMany(Edukasi::class);
+    }
+
+    public function jadwal(): HasMany
+    {
+        return $this->hasMany(Jadwal::class);
     }
 }

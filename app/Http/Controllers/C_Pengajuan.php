@@ -21,8 +21,6 @@ class C_Pengajuan extends Controller
 
     public function adminPengajuan()
     {
-        $data = Pengajuan::orderBy('created_at', 'desc')->get();
-
         $data = Pengajuan::with('user')->latest()->get();
 
         return view('admin.V_Pengajuan', compact('data'));
