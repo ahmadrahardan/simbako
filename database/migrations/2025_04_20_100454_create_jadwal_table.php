@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->date('tanggal');
             $table->string('lokasi');
-            $table->integer('kuota');
+            $table->string('kuota');
             $table->timestamps();
         });
     }

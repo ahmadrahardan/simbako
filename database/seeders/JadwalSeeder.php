@@ -30,7 +30,7 @@ class JadwalSeeder extends Seeder
                 'deskripsi' => 'Pelatihan tembakau ini bertujuan untuk meningkatkan pengetahuan dan keterampilan peserta dalam budidaya,    pemrosesan, serta pemasaran tembakau secara modern. Melalui sesi praktis, peserta akan mempelajari teknik-teknik penanaman, perawatan, panen, hingga pengolahan daun tembakau agar menghasilkan kualitas terbaik dan bernilai jual tinggi.',
                 'tanggal' => '2025-03-23',
                 'lokasi' => 'Dinas Perindustrian dan Perdagangan Kabupaten Jember',
-                'kuota' => 50,
+                'kuota' => '50',
             ]);
         }
     }

@@ -9,7 +9,7 @@ use App\Http\Controllers\C_Profil;
 use App\Http\Controllers\C_Verifikasi;
 use App\Http\Controllers\C_Jadwal;
 use App\Http\Controllers\C_Edukasi;
-use App\Http\Controllers\C_Chatbot;
+use App\Http\Controllers\C_FAQ;
 use App\Http\Controllers\DokumenController;
 
 /*
@@ -64,6 +64,9 @@ Route::middleware(['auth', 'user'])->group(function () {
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/jadwal', [C_Jadwal::class, 'adminJadwal'])->name('admin.jadwal');
+    Route::post('/jadwal/simpan', [C_Jadwal::class, 'simpan'])->name('jadwal.simpan');
+    Route::put('/jadwal/{id}', [C_Jadwal::class, 'update'])->name('jadwal.update');
+    Route::delete('/jadwal/{id}', [C_Jadwal::class, 'hapus'])->name('jadwal.hapus');
 });
 
 // Route Edukasi
@@ -80,9 +83,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::get('/edukasi/{slug}', [C_Edukasi::class, 'konten'])->middleware(['auth'])->name('edukasi.konten');
 
-// Route Chatbot
+// Route FAQ
 Route::middleware(['auth', 'user'])->group(function () {
-    Route::get('/chatbot', [C_Chatbot::class, 'chatbot'])->name('V_Chatbot');
+    Route::get('/faq', [C_FAQ::class, 'faq'])->name('V_FAQ');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/faq', [C_FAQ::class, 'adminFaq'])->name('admin.faq');
 });
 
 // Route Riwayat

@@ -2,19 +2,316 @@
 @section('title', 'Jadwal')
 @section('content')
 
-    <section x-data="pengajuanModal" class="font-sans min-h-screen bg-cover bg-center relative"
+    <section x-data="jadwalModal" class="font-sans min-h-screen bg-cover bg-center relative"
         style="background-image: url({{ asset('assets/background_1.png') }})">
 
         <!-- Header -->
         @include('master.navbar')
 
+        <!-- Notifikasi Sukses -->
+        @if (session('success'))
+            <div data-success-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
+                <!-- Logo -->
+                <div
+                    class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
+                    <img src="{{ asset('assets/rawlogo.png') }}" alt="Logo" class="h-6 w-6 object-cover">
+                </div>
+
+                <!-- Isi alert -->
+                <div class="flex-grow">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold">Berhasil!</h3>
+                        <button onclick="this.closest('div.fixed').remove()"
+                            class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
+                    </div>
+                    <p class="text-sm mt-1">{{ session('success') }}</p>
+                </div>
+            </div>
+        @endif
+
+        <!-- Notifikasi Gagal Validasi -->
+        @if ($errors->any())
+            <div data-error-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
+
+                <!-- Logo -->
+                <div
+                    class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
+                    <img src="{{ asset('assets/rawlogo.png') }}" alt="Logo" class="h-6 w-6 object-cover">
+                </div>
+
+                <!-- Isi alert -->
+                <div class="flex-grow">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold">Alert!</h3>
+                        <button onclick="this.closest('div.fixed').remove()"
+                            class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
+                    </div>
+                    <ul class="text-sm mt-1 list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         <!-- Main Content -->
-        <div class="flex flex-col items-center justify-center min-h-screen pt-28 px-8 relative z-10">
+        <div class="flex flex-col items-center justify-center min-h-screen pt-20 px-8 relative z-10">
             <div class="h-[5%] w-full bg-gradient-to-t from-slate-950 to-transparent absolute bottom-0 z-10"></div>
             <img src="{{ asset('assets/Ornament.png') }}" alt="" class="h-[1012px] w-[1440px] absolute bottom-0">
+
+            <!-- Box Header Jadwal -->
+            <div
+                class="w-full max-w-5xl bg-white/10 border border-white/30 backdrop-blur-md rounded-xl p-6 mb-6 text-white">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-semibold">Jadwal Pelatihan</h3>
+                        <p class="text-sm text-white/80">Temukan jadwal pelatihan sesuai dengan agendamu!</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-light mb-1">Pilih Bulan:</label>
+                        <select
+                            class="bg-white/20 text-white border border-white/40 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-white/50">
+                            <option>Bulan ini</option>
+                            <option>Bulan depan</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container Scroll Kartu Pelatihan -->
+            <div class="w-full max-w-5xl h-[240px] overflow-y-auto px-2 custom-scrollbar space-y-4">
+                @foreach ($data as $item)
+                    <div class="bg-white/10 border border-white/30 backdrop-blur-md h-[110px] rounded-xl p-5 text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-white/70"><i class="fa fa-calendar mr-1"></i>
+                                    {{ $item->tanggal }}</p>
+                                <h4 class="text-lg font-semibold">{{ $item->topik }}</h4>
+                                <p class="text-sm text-white/70"><i class="fa fa-map-marker mr-1"></i>
+                                    {{ $item->lokasi }}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <!-- Tombol Detail -->
+                                <button
+                                    @click="openDetail({
+                                        topik: '{{ $item->topik }}',
+                                        deskripsi: '{{ $item->deskripsi }}',
+                                        tanggal: '{{ $item->tanggal }}',
+                                        lokasi: '{{ $item->lokasi }}',
+                                        kuota: '{{ $item->kuota }}'
+                                    })"
+                                    class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 mr-5 rounded-md transition">
+                                    Detail
+                                </button>
+                                <!-- Tombol Edit -->
+                                <button type="button"
+                                    @click="editJadwal({
+                                        id: '{{ $item->id }}',
+                                        topik: '{{ $item->topik }}',
+                                        deskripsi: '{{ $item->deskripsi }}',
+                                        tanggal: '{{ $item->tanggal }}',
+                                        lokasi: '{{ $item->lokasi }}',
+                                        kuota: '{{ $item->kuota }}'
+                                    })"
+                                    class="bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-md border-2 border-white/40 flex items-center justify-center">
+                                    <img src="{{ asset('assets/edit.png') }}" alt="edit">
+                                </button>
+                                <!-- Tombol Hapus -->
+                                <form action="{{ route('jadwal.hapus', $item->id) }}" method="POST"
+                                    onsubmit="event.stopPropagation(); return confirm('Yakin ingin menghapus data ini?')"
+                                    class="ignore-click">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="bg-red-600 hover:bg-red-700 text-white p-1 rounded-md border-2 border-white/40 flex items-center justify-center">
+                                        <img src="{{ asset('assets/Trash.png') }}" alt="trash">
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Tombol Tambah -->
+            <div class="w-full max-w-[62rem] mt-4 mx-auto">
+                <div class="flex justify-end">
+                    <button @click="showTambahJadwal = true"
+                        class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg shadow-md transition z-10">
+                        Tambah
+                    </button>
+                </div>
+            </div>
+            <style>
+                /* Scrollbar container */
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 6px;
+                }
+
+                /* Track (latar belakang) */
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+
+                /* Thumb (batangnya) */
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background-color: rgba(255, 255, 255, 0.4);
+                    /* warna putih transparan */
+                    border-radius: 9999px;
+                }
+            </style>
+        </div>
+
+        <!-- Modal Detail Jadwal -->
+        <div x-show="showDetailModal" x-cloak x-transition
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div @click.outside="showDetailModal = false"
+                class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/bg_form_2.png') }}')">
+
+                <h2 class="text-2xl font-bold text-center mb-6">Detail Pelatihan</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Topik</label>
+                        <input type="text" x-model="detailJadwal.topik" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Deskripsi</label>
+                        <input type="text" x-model="detailJadwal.deskripsi" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Tanggal</label>
+                        <input type="text" x-model="detailJadwal.tanggal" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Lokasi</label>
+                        <input type="text" x-model="detailJadwal.lokasi" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Kuota</label>
+                        <input type="text" x-model="detailJadwal.kuota" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button @click="showDetailModal = false"
+                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Jadwal -->
+        <div x-show="showTambahJadwal" x-cloak x-transition
+            class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div @click.outside="showTambahJadwal = false; editMode = false"
+                class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/bg_form_2.png') }}')">
+
+                <h2 class="text-2xl font-bold text-center mb-6" x-text="editMode ? 'Edit Jadwal' : 'Tambah Jadwal'"></h2>
+
+                <form :action="editMode ? '/jadwal/' + detailJadwal.id : '{{ route('jadwal.simpan') }}'" method="POST"
+                    enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <template x-if="editMode">
+                        <input type="hidden" name="_method" value="PUT">
+                    </template>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Topik</label>
+                        <input type="text" name="topik" x-model="detailJadwal.topik"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Topik">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Deskripsi</label>
+                        <input type="text" name="deskripsi" x-model="detailJadwal.deskripsi"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Deskripsi">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Tanggal</label>
+                        <input type="text" name="tanggal" x-model="detailJadwal.tanggal"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Tanggal">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Lokasi</label>
+                        <input type="text" name="lokasi" x-model="detailJadwal.lokasi"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Lokasi">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Kuota</label>
+                        <input type="text" name="kuota" x-model="detailJadwal.kuota"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Kuota">
+                    </div>
+
+                    <div class="flex justify-between mt-6">
+                        <button type="button"
+                            @click="showTambahJadwal = false; editMode = false; detailJadwal = {id: null, topik: '', deskripsi: ''}"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg w-1/2 ml-2">
+                            Batal
+                        </button>
+                        <button type="submit" x-text="editMode ? 'Update' : 'Simpan'"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg w-1/2 ml-2">
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Footer -->
         @include('master.footer')
     </section>
+    <script>
+        if (performance.getEntriesByType("navigation")[0].type === "back_forward") {
+            const successAlert = document.querySelector('[data-success-alert]');
+            if (successAlert) successAlert.remove();
+
+            const errorAlert = document.querySelector('[data-error-alert]');
+            if (errorAlert) errorAlert.remove();
+        }
+
+        document.addEventListener("alpine:init", () => {
+            Alpine.data("jadwalModal", () => ({
+                showTambahJadwal: @json($errors->any()),
+                editMode: false,
+                showDetailModal: false,
+                detailJadwal: {
+                    id: null,
+                    topik: '',
+                    deskripsi: '',
+                    tanggal: '',
+                    lokasi: '',
+                    kuota: '',
+                },
+                openDetail(data) {
+                    this.detailJadwal = data;
+                    this.showDetailModal = true;
+                },
+                editJadwal(data) {
+                    this.detailJadwal = data;
+                    this.editMode = true;
+                    this.showTambahJadwal = true;
+                }
+            }))
+        });
+
+        if (performance.getEntriesByType("navigation")[0].type === "back_forward") {
+            history.replaceState(null, '', location.href);
+            location.reload();
+        }
+    </script>
 @endsection
