@@ -63,4 +63,13 @@ class C_FAQ extends Controller
 
         return back()->with('success', 'FAQ berhasil diperbarui!');
     }
+
+    public function hapus($id)
+    {
+        $faq = Faq::findOrFail($id);
+
+        $faq->delete();
+
+        return back()->with('success', 'FAQ berhasil dihapus!');
+    }
 }

@@ -86,7 +86,7 @@
                                             <i :class="openIndex === {{ $index }} ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
                                         </button>
 
-                                        <!-- Tombol Edit Admin -->
+                                        <!-- Tombol Edit & Hapus Admin -->
                                         @if ($isAdmin)
                                             <button type="button" @click="editFAQ({
                                                 id: '{{ $faq->id }}',
@@ -96,6 +96,16 @@
                                                 class="bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-md border border-white/40">
                                                 <img src="{{ asset('assets/edit.png') }}" alt="edit" class="w-4 h-4">
                                             </button>
+                                            <form action="{{ route('faq.hapus', $faq->id) }}" method="POST"
+                                                onsubmit="event.stopPropagation(); return confirm('Yakin ingin menghapus data ini?')"
+                                                class="ignore-click">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="bg-red-600 hover:bg-red-700 text-white p-1 rounded-md border-2 border-white/40">
+                                                    <img src="{{ asset('assets/Trash.png') }}" alt="trash" class="w-4 h-4">
+                                                </button>
+                                            </form>
                                         @endif
                                     </div>
                                 </div>
@@ -159,7 +169,7 @@
 
                     <div>
                         <label class="block text-sm font-semibold mb-1">Pertanyaan</label>
-                        <input type="text" name="pertanyaan" x-model="detaiFAQ.pertanyaan"
+                        <input type="text" name="pertanyaan" x-model="detailFAQ.pertanyaan"
                             class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Masukkan Pertanyaan">
                     </div>
@@ -172,7 +182,7 @@
 
                     <div class="flex justify-between mt-6">
                         <button type="button"
-                            @click="showTambahFAQ = false; editMode = false; detailFAQ = {id: null, topik: '', deskripsi: ''}"
+                            @click="showTambahFAQ = false; editMode = false; detailFAQ = {id: null, pertanyaan: '', jawaban: ''}"
                             class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg w-1/2 ml-2">
                             Batal
                         </button>

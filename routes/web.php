@@ -91,7 +91,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/faq/simpan', [C_FAQ::class, 'simpan'])->name('faq.simpan');
     Route::put('/faq/{id}', [C_FAQ::class, 'update'])->name('faq.update');
-    // Route::delete('/faq/{id}', [C_FAQ::class, 'hapus'])->name('faq.hapus');
+    Route::delete('/faq/{id}', [C_FAQ::class, 'hapus'])->name('faq.hapus');
 });
 
 // Route Riwayat
