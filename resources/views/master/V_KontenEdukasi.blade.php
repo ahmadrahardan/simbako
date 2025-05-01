@@ -66,12 +66,12 @@
             <div class="h-[5%] w-full bg-gradient-to-t from-slate-950 to-transparent absolute bottom-0 z-10"></div>
             <img src="{{ asset('assets/Ornament.png') }}" alt="" class="h-[1012px] w-[1440px] absolute bottom-0">
 
-            <div class="bg-white/10 backdrop-blur-2xl border border-white/60 rounded-2xl shadow-lg p-6 w-full max-w-5xl">
+            <div class="border border-white/60 rounded-2xl shadow-lg p-6 w-full bg-fit bg-center z-20 max-w-5xl" style="background-image: url({{ asset('assets/biggbg.png') }})">
                 <div class="overflow-y-auto h-[450px] px-6 custom-scrollbar relative text-white font-sans">
 
                     <div class="absolute top-0 left-0 mt-4 ml-2 flex gap-2">
                         <a href="{{ $isAdmin ? route('admin.edukasi') : route('V_Edukasi') }}"
-                            class="bg-white/20 hover:bg-white/30 py-1 px-3 rounded-lg backdrop-blur flex items-center justify-center">
+                            class="bg-green-500 hover:bg-green-700 py-1 px-3 rounded-lg backdrop-blur flex items-center justify-center">
                             <i class="fa fa-arrow-left"></i>
                         </a>
                         @if($isAdmin)
@@ -101,19 +101,14 @@
 
                     <!-- Tanggal -->
                     <div
-                        class="absolute top-0 right-0 mt-4 mr-4 bg-white/20 text-sm text-gray-100 px-3 py-1 rounded-md backdrop-blur">
+                        class="absolute top-0 right-0 mt-4 mr-4 bg-green-500 text-sm text-gray-100 px-3 py-1 rounded-md backdrop-blur">
                         {{ $edukasi->created_at->diffForHumans() }}
                     </div>
 
                     <!-- Judul -->
-                    <h2 class="text-center text-xl font-semibold mt-12">
+                    <h2 class="text-center text-xl font-semibold mt-12 text-black">
                         {{ $edukasi->topik }}
                     </h2>
-
-                    <!-- Isi Paragraf -->
-                    <p class="mt-4 text-justify text-sm leading-relaxed text-white/90">
-                        {!! nl2br(e(file_get_contents(public_path($edukasi->konten)))) !!}
-                    </p>
 
                     @php
                         if (!function_exists('youtubeEmbed')) {
@@ -137,6 +132,12 @@
                             </iframe>
                         </div>
                     @endif
+
+                    <!-- Isi Paragraf -->
+                    <p class="mt-4 text-justify text-sm leading-relaxed text-black">
+                        {!! nl2br(e(file_get_contents(public_path($edukasi->konten)))) !!}
+                    </p>
+
                 </div>
                 <style>
                     /* Scrollbar container */

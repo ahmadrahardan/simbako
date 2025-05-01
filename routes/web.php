@@ -84,12 +84,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::get('/edukasi/{slug}', [C_Edukasi::class, 'konten'])->middleware(['auth'])->name('edukasi.konten');
 
 // Route FAQ
-Route::middleware(['auth', 'user'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/faq', [C_FAQ::class, 'faq'])->name('V_FAQ');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/faq', [C_FAQ::class, 'adminFaq'])->name('admin.faq');
+    Route::post('/faq/simpan', [C_FAQ::class, 'simpan'])->name('faq.simpan');
+    Route::put('/faq/{id}', [C_FAQ::class, 'update'])->name('faq.update');
+    // Route::delete('/faq/{id}', [C_FAQ::class, 'hapus'])->name('faq.hapus');
 });
 
 // Route Riwayat

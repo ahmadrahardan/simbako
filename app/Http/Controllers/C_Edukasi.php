@@ -133,8 +133,9 @@ class C_Edukasi extends Controller
 
         $edukasi->save();
 
-        return redirect()->route('edukasi.konten', $edukasi->slug)
-            ->with('success', 'Edukasi berhasil diperbarui!');
+        return back()->with('success', 'Edukasi berhasil diperbarui!');
+        // return redirect()->route('edukasi.konten', $edukasi->slug)
+        //     ->with('success', 'Edukasi berhasil diperbarui!');
     }
 
 

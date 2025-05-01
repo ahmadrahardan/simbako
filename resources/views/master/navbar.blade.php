@@ -17,7 +17,6 @@
         <div class="flex items-center gap-10">
             @if($isAdmin)
                 <a href="{{ route('V_Verifikasi') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Verifikasi</a>
-                <a href="{{ route('admin.faq') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">FAQ</a>
             @endif
 
             {{-- Ngga tampil di dashboard --}}
@@ -34,10 +33,11 @@
                 @endif
             @endif
 
+            <a href="{{ route('V_FAQ') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">FAQ</a>
+
             {{-- Riwayat dan FAQ untuk user --}}
             @unless($isAdmin)
                 <a href="{{ route('V_Riwayat') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Riwayat</a>
-                <a href="{{ route('V_FAQ') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">FAQ</a>
             @endunless
 
             {{-- Profil --}}
