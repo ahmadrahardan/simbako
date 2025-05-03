@@ -30,7 +30,7 @@ class EdukasiSeeder extends Seeder
                 'topik' => $topik,
                 'slug' => Str::slug($topik),
                 'thumbnail' => 'dummy/cigar.png',
-                'konten' => 'dummy/Tembakau.txt',
+                'konten' => 'dummy/tembakau.txt',
                 'link' => 'https://youtu.be/5siYtoCb-00?si=lbSI5Lo0fJwwzHwK',
             ]);
         }
