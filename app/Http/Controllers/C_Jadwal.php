@@ -2,23 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use App\Models\Jadwal;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class C_Jadwal extends Controller
 {
-    public function jadwal()
+    public function jadwal(Request $request)
     {
-        $data = Jadwal::latest()->get();
+        $bulan = $request->get('bulan', now()->format('Y-m'));
+
+        $tahun = substr($bulan, 0, 4);
+        $bulanAngka = substr($bulan, 5, 2);
+
+        $data = Jadwal::whereYear('tanggal', $tahun)
+            ->whereMonth('tanggal', $bulanAngka)
+            ->orderBy('tanggal', 'asc')
+            ->get();
+
         return view('user.V_Jadwal', compact('data'));
     }
 
-    public function adminJadwal()
+    public function adminJadwal(Request $request)
     {
-        $data = Jadwal::latest()->get();
+        $bulan = $request->get('bulan', now()->format('Y-m'));
+
+        $tahun = substr($bulan, 0, 4);
+        $bulanAngka = substr($bulan, 5, 2);
+
+        $data = Jadwal::whereYear('tanggal', $tahun)
+            ->whereMonth('tanggal', $bulanAngka)
+            ->orderBy('tanggal', 'asc')
+            ->get();
+
         return view('admin.V_Jadwal', compact('data'));
     }
 

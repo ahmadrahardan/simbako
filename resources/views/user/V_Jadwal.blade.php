@@ -21,11 +21,24 @@
                         <p class="text-sm text-white/80">Temukan jadwal pelatihan sesuai dengan agendamu!</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-light mb-1">Pilih Bulan:</label>
-                        <select
-                            class="bg-white/20 text-white border border-white/40 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-white/50">
-                            <option>Bulan ini</option>
-                            <option>Bulan depan</option>
+                        @php
+                            $currentYear = now()->year;
+                            $currentMonth = now()->month;
+                        @endphp
+                        <label class="block text-sm font-light mb-1 text-white">Pilih Bulan & Tahun:</label>
+                        <select name="bulan_tahun" x-model="selectedMonthYear" @change="filterByMonthYear"
+                            class="bg-green-500 text-white border border-white/40 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-white/50">
+                            @for ($y = $currentYear; $y <= $currentYear + 2; $y++)
+                                @for ($m = 1; $m <= 12; $m++)
+                                    @php
+                                        $value = sprintf('%04d-%02d', $y, $m);
+                                        $label = \Carbon\Carbon::createFromDate($y, $m, 1)->translatedFormat('F Y');
+                                    @endphp
+                                    <option value="{{ $value }}" @selected($value === request('bulan', now()->format('Y-m')))>
+                                        {{ $label }}
+                                    </option>
+                                @endfor
+                            @endfor
                         </select>
                     </div>
                 </div>
@@ -133,6 +146,7 @@
             Alpine.data("jadwalModal", () => ({
                 showTambahPengajuan: @json($errors->any()),
                 showDetailModal: false,
+                selectedMonthYear: '{{ request()->get('bulan', now()->format('Y-m')) }}',
                 detailJadwal: {
                     topik: '',
                     deskripsi: '',
@@ -143,6 +157,11 @@
                 openDetail(data) {
                     this.detailJadwal = data;
                     this.showDetailModal = true;
+                },
+                filterByMonthYear() {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('bulan', this.selectedMonthYear);
+                    window.location.href = url.toString();
                 }
             }))
         });
