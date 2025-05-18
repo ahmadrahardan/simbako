@@ -182,8 +182,8 @@
         <div x-show="showDetailModal" x-cloak x-transition
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div @click.outside="showDetailModal = false"
-                class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
-                style="background-image: url('{{ asset('assets/bg_form_2.png') }}')">
+                class="bg-white rounded-2xl px-8 py-5 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
 
                 <h2 class="text-2xl font-bold text-center mb-6">Detail Pelatihan</h2>
 
@@ -195,8 +195,9 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Deskripsi</label>
-                        <input type="text" x-model="detailJadwal.deskripsi" readonly
-                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                        <textarea x-model="detailJadwal.deskripsi" readonly class="w-full border rounded-lg px-4 py-2 bg-gray-100 resize-none"
+                            rows="3"></textarea>
+
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Tanggal</label>
@@ -224,21 +225,81 @@
             </div>
         </div>
 
-        <!-- Modal Jadwal -->
-        <div x-show="showTambahJadwal" x-cloak x-transition
+        <!-- Modal Form Tambah Jadwal -->
+        <div x-show="showTambahJadwal && !editMode" x-cloak x-transition
+            class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div @click.outside="showTambahJadwal = false"
+                class="bg-white rounded-2xl px-8 py-5 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
+
+                <h2 class="text-2xl font-bold text-center mb-6">Tambah Jadwal</h2>
+
+                <form action="{{ route('jadwal.simpan') }}" method="POST" enctype="multipart/form-data"
+                    class="space-y-4">
+                    @csrf
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Topik</label>
+                        <input type="text" name="topik" value="{{ old('topik') }}"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Topik">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Deskripsi</label>
+                        <textarea name="deskripsi"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                            placeholder="Masukkan Deskripsi" rows="3">{{ old('deskripsi') }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Tanggal</label>
+                        <input type="date" name="tanggal" value="{{ old('tanggal') }}"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Lokasi</label>
+                        <input type="text" name="lokasi" value="{{ old('lokasi') }}"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Lokasi">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Kuota</label>
+                        <input type="text" name="kuota" value="{{ old('kuota') }}"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Kuota">
+                    </div>
+
+                    <div class="flex justify-end mt-6 space-x-3">
+                        <button type="button" @click="showTambahJadwal = false"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg ml-2">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg ml-2">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Form Edit Jadwal -->
+        <div x-show="showTambahJadwal && editMode" x-cloak x-transition
             class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div @click.outside="showTambahJadwal = false; editMode = false"
-                class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
-                style="background-image: url('{{ asset('assets/bg_form_2.png') }}')">
+                class="bg-white rounded-2xl py-5 px-8 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
 
-                <h2 class="text-2xl font-bold text-center mb-6" x-text="editMode ? 'Edit Jadwal' : 'Tambah Jadwal'"></h2>
+                <h2 class="text-2xl font-bold text-center mb-6">Edit Jadwal</h2>
 
-                <form :action="editMode ? '/jadwal/' + detailJadwal.id : '{{ route('jadwal.simpan') }}'" method="POST"
-                    enctype="multipart/form-data" class="space-y-4">
+                <form :action="'/jadwal/' + detailJadwal.id" method="POST" enctype="multipart/form-data"
+                    class="space-y-4">
                     @csrf
-                    <template x-if="editMode">
-                        <input type="hidden" name="_method" value="PUT">
-                    </template>
+                    <input type="hidden" name="_method" value="PUT">
+                    <input type="hidden" name="edit_mode" value="1">
 
                     <div>
                         <label class="block text-sm font-semibold mb-1">Topik</label>
@@ -246,24 +307,27 @@
                             class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Masukkan Topik">
                     </div>
+
                     <div>
                         <label class="block text-sm font-semibold mb-1">Deskripsi</label>
-                        <input type="text" name="deskripsi" x-model="detailJadwal.deskripsi"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Deskripsi">
+                        <textarea name="deskripsi" x-model="detailJadwal.deskripsi"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                            placeholder="Masukkan Deskripsi" rows="3"></textarea>
                     </div>
+
                     <div>
                         <label class="block text-sm font-semibold mb-1">Tanggal</label>
-                        <input type="text" name="tanggal" x-model="detailJadwal.tanggal"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Tanggal">
+                        <input type="date" name="tanggal" x-model="detailJadwal.tanggal"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
                     </div>
+
                     <div>
                         <label class="block text-sm font-semibold mb-1">Lokasi</label>
                         <input type="text" name="lokasi" x-model="detailJadwal.lokasi"
                             class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Masukkan Lokasi">
                     </div>
+
                     <div>
                         <label class="block text-sm font-semibold mb-1">Kuota</label>
                         <input type="text" name="kuota" x-model="detailJadwal.kuota"
@@ -271,14 +335,14 @@
                             placeholder="Masukkan Kuota">
                     </div>
 
-                    <div class="flex justify-between mt-6">
-                        <button type="button"
-                            @click="showTambahJadwal = false; editMode = false; detailJadwal = {id: null, topik: '', deskripsi: ''}"
-                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg w-1/2 ml-2">
+                    <div class="flex justify-end mt-6 space-x-3">
+                        <button type="button" @click="showTambahJadwal = false; editMode = false"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg ml-2">
                             Batal
                         </button>
-                        <button type="submit" x-text="editMode ? 'Update' : 'Simpan'"
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg w-1/2 ml-2">
+                        <button type="submit"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg ml-2">
+                            Update
                         </button>
                     </div>
                 </form>
@@ -300,16 +364,16 @@
         document.addEventListener("alpine:init", () => {
             Alpine.data("jadwalModal", () => ({
                 showTambahJadwal: @json($errors->any()),
-                editMode: false,
+                editMode: @json(old('edit_mode') == 1),
                 showDetailModal: false,
                 selectedMonthYear: '{{ request()->get('bulan', now()->format('Y-m')) }}',
                 detailJadwal: {
-                    id: null,
-                    topik: '',
-                    deskripsi: '',
-                    tanggal: '',
-                    lokasi: '',
-                    kuota: '',
+                    id: '{{ old('id') ?? '' }}',
+                    topik: '{{ old('topik') ?? '' }}',
+                    deskripsi: '{{ old('deskripsi') ?? '' }}',
+                    tanggal: '{{ old('tanggal') ?? '' }}',
+                    lokasi: '{{ old('lokasi') ?? '' }}',
+                    kuota: '{{ old('kuota') ?? '' }}',
                 },
                 openDetail(data) {
                     this.detailJadwal = data;
@@ -324,6 +388,12 @@
                     const url = new URL(window.location.href);
                     url.searchParams.set('bulan', this.selectedMonthYear);
                     window.location.href = url.toString();
+                },
+                init() {
+                    if (this.editMode && !this.detailJadwal.id) {
+                        this.editMode = false;
+                        this.showTambahJadwal = true;
+                    }
                 }
             }))
         });

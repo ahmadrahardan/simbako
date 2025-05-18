@@ -2,9 +2,9 @@
 @section('title', 'Konten')
 @section('content')
 
-@php
-    $isAdmin = Auth::user()->isAdmin();
-@endphp
+    @php
+        $isAdmin = Auth::user()->isAdmin();
+    @endphp
 
     <section x-data="edukasiModal" class="font-sans min-h-screen bg-cover bg-center relative"
         style="background-image: url({{ asset('assets/background_1.png') }})">
@@ -66,7 +66,8 @@
             <div class="h-[5%] w-full bg-gradient-to-t from-slate-950 to-transparent absolute bottom-0 z-10"></div>
             <img src="{{ asset('assets/Ornament.png') }}" alt="" class="h-[1012px] w-[1440px] absolute bottom-0">
 
-            <div class="border border-white/60 rounded-2xl shadow-lg p-6 w-full bg-fit bg-center z-20 max-w-5xl" style="background-image: url({{ asset('assets/biggbg.png') }})">
+            <div class="border border-white/60 rounded-2xl shadow-lg p-6 w-full bg-fit bg-center z-20 max-w-5xl"
+                style="background-image: url({{ asset('assets/biggbg.png') }})">
                 <div class="overflow-y-auto h-[450px] px-6 custom-scrollbar relative text-white font-sans">
 
                     <div class="absolute top-0 left-0 mt-4 ml-2 flex gap-2">
@@ -74,7 +75,7 @@
                             class="bg-green-500 hover:bg-green-700 py-1 px-3 rounded-lg backdrop-blur flex items-center justify-center">
                             <i class="fa fa-arrow-left"></i>
                         </a>
-                        @if($isAdmin)
+                        @if ($isAdmin)
                             <button type="button"
                                 @click.stop="editEdukasi({
                                     id: '{{ $edukasi->id }}',
@@ -163,14 +164,16 @@
         <div x-show="showEditEdukasi" x-cloak x-transition
             class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div @click.outside="showModal = false"
-                class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
-                style="background-image: url('{{ asset('assets/bg_form_2.png') }}')">
+                class="bg-white rounded-2xl p-8 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
 
                 <h2 class="text-2xl font-bold text-center mb-6">Edit Edukasi</h2>
 
                 <form action="{{ route('edukasi.update', $edukasi->id) }}" method="POST" enctype="multipart/form-data"
                     class="space-y-4">
                     @csrf
+                    <input type="hidden" name="edit_mode" value="1">
+                    <input type="hidden" name="id" value="{{ $edukasi->id }}">
                     @method('PUT')
                     <div>
                         <label class="block text-sm font-semibold mb-1">Topik</label>
@@ -199,14 +202,14 @@
                     </div>
                     <p class="text-xs text-orange-500 mt-1">*File txt maksimal 10 MB</p>
 
-                    <div class="flex justify-between mt-6">
+                    <div class="flex justify-end mt-6 space-x-3">
                         <button type="button" @click="showEditEdukasi = false"
-                            class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg w-1/2 mr-2">
+                            class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg mr-2">
                             Batal
                         </button>
                         <button type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg w-1/2 ml-2">
-                            Simpan
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg ml-2">
+                            Update
                         </button>
                     </div>
                 </form>
@@ -227,11 +230,11 @@
 
         document.addEventListener("alpine:init", () => {
             Alpine.data("edukasiModal", () => ({
-                showEditEdukasi: @json($errors->any()),
+                showEditEdukasi: {{ $errors->any() && old('edit_mode') == 1 ? 'true' : 'false' }},
                 formData: {
-                    id: null,
-                    topik: '',
-                    link: '',
+                    id: '{{ old('id', $edukasi->id ?? '') }}',
+                    topik: '{{ old('topik', $edukasi->topik ?? '') }}',
+                    link: '{{ old('link', $edukasi->link ?? '') }}'
                 },
                 editEdukasi(data) {
                     this.formData = data;

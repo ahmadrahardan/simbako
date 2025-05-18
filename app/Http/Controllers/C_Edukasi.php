@@ -34,7 +34,7 @@ class C_Edukasi extends Controller
             'topik' => 'required|string|max:255',
             'thumbnail' => 'required|image|max:2048',
             'konten' => 'required|file|mimes:txt|max:10240',
-            'link' => 'nullable|url',
+            'link' => 'nullable|url|max:255',
         ];
 
         $messages = [
@@ -48,6 +48,7 @@ class C_Edukasi extends Controller
             'konten.mimes' => 'File harus dalam format txt.',
             'konten.max' => 'Ukuran file maksimal 10MB.',
             'link.url' => 'Link YouTube harus berupa URL yang valid.',
+            'link.max' => 'Link Youtube terlalu panjang.',
         ];
 
         $validated = $request->validate($rules, $messages);
@@ -79,11 +80,16 @@ class C_Edukasi extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->merge([
+            'id' => $id,
+            'edit_mode' => 1,
+        ]);
+
         $rules = [
             'topik' => 'required|string|max:255',
             'thumbnail' => 'nullable|image|max:2048',
             'konten' => 'nullable|file|mimes:txt|max:10240',
-            'link' => 'nullable|url',
+            'link' => 'nullable|url|max:255',
         ];
 
         $messages = [
@@ -95,6 +101,7 @@ class C_Edukasi extends Controller
             'konten.mimes' => 'File harus dalam format txt.',
             'konten.max' => 'Ukuran file maksimal 10MB.',
             'link.url' => 'Link YouTube harus berupa URL yang valid.',
+            'link.max' => 'Link Youtube terlalu panjang.',
         ];
 
         $validated = $request->validate($rules, $messages);
@@ -133,9 +140,8 @@ class C_Edukasi extends Controller
 
         $edukasi->save();
 
-        return back()->with('success', 'Edukasi berhasil diperbarui!');
-        // return redirect()->route('edukasi.konten', $edukasi->slug)
-        //     ->with('success', 'Edukasi berhasil diperbarui!');
+        return redirect()->route('edukasi.konten', $edukasi->slug)
+            ->with('success', 'Edukasi berhasil diperbarui!');
     }
 
 

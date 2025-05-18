@@ -44,7 +44,7 @@ class C_Jadwal extends Controller
     {
         $rules = [
             'topik' => 'required|string|max:64',
-            'deskripsi' => 'required|string|max:255',
+            'deskripsi' => 'required|string|max:500',
             'tanggal' => 'required|date',
             'lokasi' => 'required|string|max:64',
             'kuota' => 'required|string',
@@ -78,9 +78,14 @@ class C_Jadwal extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->merge([
+            'id' => $id,
+            'edit_mode' => 1,
+        ]);
+
         $rules = [
             'topik' => 'required|string|max:64',
-            'deskripsi' => 'required|string|max:255',
+            'deskripsi' => 'required|string|max:500',
             'tanggal' => 'required|date',
             'lokasi' => 'required|string|max:64',
             'kuota' => 'required|string',

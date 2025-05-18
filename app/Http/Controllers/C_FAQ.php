@@ -41,6 +41,11 @@ class C_FAQ extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->merge([
+            'id' => $id,
+            'edit_mode' => 1,
+        ]);
+
         $rules = [
             'pertanyaan' => 'required|string|max:64',
             'jawaban' => 'required|string|max:255',

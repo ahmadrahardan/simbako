@@ -80,15 +80,19 @@
                                     <span class="font-semibold">{{ $faq->pertanyaan }}</span>
 
                                     <!-- Aksi -->
-                                    <div class="flex items-center gap-2">
+                                    <div class="ml-4 flex items-center gap-2">
                                         <!-- Panah -->
-                                        <button @click="openIndex === {{ $index }} ? openIndex = null : openIndex = {{ $index }}">
-                                            <i :class="openIndex === {{ $index }} ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
+                                        <button
+                                            @click="openIndex === {{ $index }} ? openIndex = null : openIndex = {{ $index }}">
+                                            <i
+                                                :class="openIndex === {{ $index }} ? 'fas fa-chevron-up' :
+                                                    'fas fa-chevron-down'"></i>
                                         </button>
 
                                         <!-- Tombol Edit & Hapus Admin -->
                                         @if ($isAdmin)
-                                            <button type="button" @click="editFAQ({
+                                            <button type="button"
+                                                @click="editFAQ({
                                                 id: '{{ $faq->id }}',
                                                 pertanyaan: '{{ $faq->pertanyaan }}',
                                                 jawaban: '{{ $faq->jawaban }}',
@@ -103,7 +107,8 @@
                                                 @method('DELETE')
                                                 <button type="submit"
                                                     class="bg-red-600 hover:bg-red-700 text-white p-1 rounded-md border-2 border-white/40">
-                                                    <img src="{{ asset('assets/Trash.png') }}" alt="trash" class="w-4 h-4">
+                                                    <img src="{{ asset('assets/Trash.png') }}" alt="trash"
+                                                        class="w-4 h-4">
                                                 </button>
                                             </form>
                                         @endif
@@ -151,43 +156,82 @@
             @endif
         </div>
 
-        <!-- Modal FAQ -->
-        <div x-show="showTambahFAQ" x-cloak x-transition
+        <!-- Modal Form Tambah FAQ -->
+        <div x-show="showTambahFAQ && !editMode" x-cloak x-transition
             class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div @click.outside="showTambahJadwal = false; editMode = false"
-                class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
-                style="background-image: url('{{ asset('assets/bg_form.png') }}')">
+            <div @click.outside="showTambahFAQ = false"
+                class="bg-white rounded-2xl p-8 w-[600px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
 
-                <h2 class="text-2xl font-bold text-center mb-6" x-text="editMode ? 'Edit FAQ' : 'Tambah FAQ'"></h2>
+                <h2 class="text-2xl font-bold text-center mb-6">Tambah FAQ</h2>
 
-                <form :action="editMode ? '/faq/' + detailFAQ.id : '{{ route('faq.simpan') }}'" method="POST"
-                    enctype="multipart/form-data" class="space-y-4">
+                <form action="{{ route('faq.simpan') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                     @csrf
-                    <template x-if="editMode">
-                        <input type="hidden" name="_method" value="PUT">
-                    </template>
 
                     <div>
                         <label class="block text-sm font-semibold mb-1">Pertanyaan</label>
-                        <input type="text" name="pertanyaan" x-model="detailFAQ.pertanyaan"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Pertanyaan">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Jawaban</label>
-                        <input type="text" name="jawaban" x-model="detailFAQ.jawaban"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Jawaban">
+                        <textarea name="pertanyaan"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                            placeholder="Masukkan Pertanyaan">{{ old('pertanyaan') }}</textarea>
                     </div>
 
-                    <div class="flex justify-between mt-6">
-                        <button type="button"
-                            @click="showTambahFAQ = false; editMode = false; detailFAQ = {id: null, pertanyaan: '', jawaban: ''}"
-                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg w-1/2 ml-2">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Jawaban</label>
+                        <textarea name="jawaban"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                            placeholder="Masukkan Jawaban">{{ old('jawaban') }}</textarea>
+                    </div>
+
+                    <div class="flex justify-end mt-6 space-x-3">
+                        <button type="button" @click="showTambahFAQ = false"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg ml-2">
                             Batal
                         </button>
-                        <button type="submit" x-text="editMode ? 'Update' : 'Simpan'"
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg w-1/2 ml-2">
+                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg ml-2">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Form Edit FAQ -->
+        <div x-show="showTambahFAQ && editMode" x-cloak x-transition
+            class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div @click.outside="showTambahFAQ = false; editMode = false"
+                class="bg-white rounded-2xl p-8 w-[600px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
+
+                <h2 class="text-2xl font-bold text-center mb-6">Edit FAQ</h2>
+
+                <form :action="'/faq/' + detailFAQ.id" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="_method" value="PUT">
+                    <input type="hidden" name="edit_mode" value="1">
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Pertanyaan</label>
+                        <textarea name="pertanyaan" x-model="detailFAQ.pertanyaan"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                            placeholder="Masukkan Pertanyaan"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Jawaban</label>
+                        <textarea name="jawaban" x-model="detailFAQ.jawaban"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                            placeholder="Masukkan Jawaban"></textarea>
+                    </div>
+
+                    <div class="flex justify-end mt-6 space-x-3">
+                        <button type="button"
+                            @click="showTambahFAQ = false; editMode = false; detailFAQ = {id: null, pertanyaan: '', jawaban: ''}"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg ml-2">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg ml-2">
+                            Update
                         </button>
                     </div>
                 </form>
@@ -208,17 +252,23 @@
 
         document.addEventListener("alpine:init", () => {
             Alpine.data("faqModal", () => ({
-                showTambahFAQ: @json($errors->any()),
-                editMode: false,
+                showTambahFAQ: {{ $errors->any() ? 'true' : 'false' }},
+                editMode: {{ old('edit_mode') == 1 ? 'true' : 'false' }},
                 detailFAQ: {
-                    id: null,
-                    pertanyaan: '',
-                    jawaban: '',
+                    id: '{{ old('id', '') }}',
+                    pertanyaan: '{{ old('pertanyaan', '') }}',
+                    jawaban: '{{ old('jawaban', '') }}'
                 },
                 editFAQ(data) {
                     this.detailFAQ = data;
                     this.editMode = true;
                     this.showTambahFAQ = true;
+                },
+                init() {
+                    if (this.editMode && !this.detailFAQ.id) {
+                        this.editMode = false;
+                        this.showTambahFAQ = true;
+                    }
                 }
             }))
         });
