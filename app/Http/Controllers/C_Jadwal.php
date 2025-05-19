@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jadwal;
+use App\Models\Pendaftaran;
+use App\Models\Peserta;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -117,7 +119,6 @@ class C_Jadwal extends Controller
         return back()->with('success', 'Jadwal berhasil diperbarui!');
     }
 
-
     public function hapus($id)
     {
         $jadwal = Jadwal::findOrFail($id);
@@ -125,5 +126,61 @@ class C_Jadwal extends Controller
         $jadwal->delete();
 
         return back()->with('success', 'Data jadwal berhasil dihapus!');
+    }
+
+    public function daftar(Request $request)
+    {
+        $rules = [
+            'jadwal_id' => 'required|exists:jadwal,id',
+            'pendaftar_1' => 'nullable|string|max:64',
+            'pendaftar_2' => 'nullable|string|max:64',
+            'pendaftar_3' => 'nullable|string|max:64',
+            'pendaftar_4' => 'nullable|string|max:64',
+            'pendaftar_5' => 'nullable|string|max:64',
+        ];
+
+        $messages = [
+            'jadwal_id.required' => 'ID jadwal tidak ditemukan.',
+            'jadwal_id.exists' => 'Jadwal tidak valid.',
+            'pendaftar_1.max' => 'Nama terlalu panjang.',
+            'pendaftar_2.max' => 'Nama terlalu panjang.',
+            'pendaftar_3.max' => 'Nama terlalu panjang.',
+            'pendaftar_4.max' => 'Nama terlalu panjang.',
+            'pendaftar_5.max' => 'Nama terlalu panjang.',
+        ];
+
+        $validated = $request->validate($rules, $messages);
+
+        // Validasi minimal satu nama diisi
+        if (
+            empty($validated['pendaftar_1']) &&
+            empty($validated['pendaftar_2']) &&
+            empty($validated['pendaftar_3']) &&
+            empty($validated['pendaftar_4']) &&
+            empty($validated['pendaftar_5'])
+        ) {
+            return back()
+                ->withErrors(['pendaftar_1' => 'Belum ada nama yang didaftarkan!'])
+                ->withInput();
+        }
+
+        // Simpan ke tabel `pendaftaran`
+        $pendaftaran = Pendaftaran::create([
+            'user_id' => auth()->id(),
+            'jadwal_id' => $validated['jadwal_id'],
+        ]);
+
+        // Simpan peserta ke tabel `peserta`
+        foreach (range(1, 5) as $i) {
+            $nama = $validated["pendaftar_$i"] ?? null;
+            if ($nama) {
+                Peserta::create([
+                    'pendaftaran_id' => $pendaftaran->id,
+                    'nama' => $nama,
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Berhasil mendaftar!');
     }
 }

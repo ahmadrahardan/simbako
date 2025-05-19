@@ -72,4 +72,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Jadwal::class);
     }
+
+    public function pendaftaranPelatihan(): HasMany
+    {
+        return $this->hasMany(Pendaftaran::class);
+    }
 }

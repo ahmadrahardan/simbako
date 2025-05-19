@@ -11,6 +11,7 @@ use App\Http\Controllers\C_Jadwal;
 use App\Http\Controllers\C_Edukasi;
 use App\Http\Controllers\C_FAQ;
 use App\Http\Controllers\DokumenController;
+use App\Models\Jadwal;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,15 +25,16 @@ use App\Http\Controllers\DokumenController;
 */
 
 Route::get('/', function () {
-    return view('auth.V_Landing');})->name('landing');
+    return view('auth.V_Landing');
+})->name('landing');
 
 //Route Register
-Route::get('/register', [C_Register::class ,'daftar'])->name('register');
+Route::get('/register', [C_Register::class, 'daftar'])->name('register');
 Route::post('/register', [C_Register::class, 'daftarUser']);
 
 //Route Login
-Route::get('/login', [C_Login::class ,'masuk'])->name('login');
-Route::post('/login',[C_Login::class, 'cekData']);
+Route::get('/login', [C_Login::class, 'masuk'])->name('login');
+Route::post('/login', [C_Login::class, 'cekData']);
 Route::post('/logout', [C_Login::class, 'logout'])->name('logout');
 
 // Route Dashboard
@@ -60,6 +62,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // Route Jadwal
 Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/jadwal', [C_Jadwal::class, 'jadwal'])->name('V_Jadwal');
+    Route::post('/jadwal/daftar', [C_Jadwal::class, 'daftar'])->name('jadwal.daftar');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -67,6 +70,23 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/jadwal/simpan', [C_Jadwal::class, 'simpan'])->name('jadwal.simpan');
     Route::put('/jadwal/{id}', [C_Jadwal::class, 'update'])->name('jadwal.update');
     Route::delete('/jadwal/{id}', [C_Jadwal::class, 'hapus'])->name('jadwal.hapus');
+    Route::get('/api/peserta/{jadwal}', function ($jadwalId) {
+        $jadwal = Jadwal::with('pendaftaran.peserta')->find($jadwalId);
+
+        if (!$jadwal) {
+            return response()->json([], 404);
+        }
+
+        $pesertaList = [];
+
+        foreach ($jadwal->pendaftaran as $pendaftaran) {
+            foreach ($pendaftaran->peserta as $peserta) {
+                $pesertaList[] = $peserta->nama;
+            }
+        }
+
+        return response()->json($pesertaList);
+    });
 });
 
 // Route Edukasi

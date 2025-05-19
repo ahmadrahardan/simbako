@@ -8,6 +8,55 @@
         <!-- Header -->
         @include('master.navbar')
 
+        <!-- Notifikasi Sukses -->
+        @if (session('success'))
+            <div data-success-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
+                <!-- Logo -->
+                <div
+                    class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
+                    <img src="{{ asset('assets/rawlogo.png') }}" alt="Logo" class="h-6 w-6 object-cover">
+                </div>
+
+                <!-- Isi alert -->
+                <div class="flex-grow">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold">Berhasil!</h3>
+                        <button onclick="this.closest('div.fixed').remove()"
+                            class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
+                    </div>
+                    <p class="text-sm mt-1">{{ session('success') }}</p>
+                </div>
+            </div>
+        @endif
+
+        <!-- Notifikasi Gagal Validasi -->
+        @if ($errors->any())
+            <div data-error-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
+
+                <!-- Logo -->
+                <div
+                    class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
+                    <img src="{{ asset('assets/rawlogo.png') }}" alt="Logo" class="h-6 w-6 object-cover">
+                </div>
+
+                <!-- Isi alert -->
+                <div class="flex-grow">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold">Alert!</h3>
+                        <button onclick="this.closest('div.fixed').remove()"
+                            class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
+                    </div>
+                    <ul class="text-sm mt-1 list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         <!-- Main Content -->
         <div class="flex flex-col items-center justify-center min-h-screen pt-20 px-8 relative z-10">
             <div class="h-[5%] w-full bg-gradient-to-t from-slate-950 to-transparent absolute bottom-0 z-10"></div>
@@ -57,17 +106,23 @@
                                 <p class="text-sm text-white/70"><i class="fa fa-map-marker mr-1"></i>
                                     {{ $item->lokasi }}</p>
                             </div>
-                            <button
-                                @click="openDetail({
-                                    topik: '{{ $item->topik }}',
-                                    deskripsi: '{{ $item->deskripsi }}',
-                                    tanggal: '{{ $item->tanggal }}',
-                                    lokasi: '{{ $item->lokasi }}',
-                                    kuota: '{{ $item->kuota }}'
-                                })"
-                                class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
-                                Detail
-                            </button>
+                            <div class="flex items-center justify-between gap-5">
+                                <button @click="openDaftar('{{ $item->id }}')"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded-md transition">
+                                    Daftar
+                                </button>
+                                <button
+                                    @click="openDetail({
+                                        topik: '{{ $item->topik }}',
+                                        deskripsi: '{{ $item->deskripsi }}',
+                                        tanggal: '{{ $item->tanggal }}',
+                                        lokasi: '{{ $item->lokasi }}',
+                                        kuota: '{{ $item->kuota }}'
+                                    })"
+                                    class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
+                                    Detail
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @endforeach
@@ -94,10 +149,10 @@
 
         <!-- Modal Detail Jadwal -->
         <div x-show="showDetailModal" x-cloak x-transition
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div @click.outside="showDetailModal = false"
-                class="bg-white rounded-2xl p-8 w-[400px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
-                style="background-image: url('{{ asset('assets/bg_form_2.png') }}')">
+                class="bg-white rounded-2xl px-8 py-5 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
 
                 <h2 class="text-2xl font-bold text-center mb-6">Detail Pelatihan</h2>
 
@@ -109,8 +164,8 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Deskripsi</label>
-                        <input type="text" x-model="detailJadwal.deskripsi" readonly
-                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                        <textarea x-model="detailJadwal.deskripsi" readonly class="w-full border rounded-lg px-4 py-2 bg-gray-100 resize-none"
+                            rows="3"></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Tanggal</label>
@@ -138,14 +193,78 @@
             </div>
         </div>
 
+        <!-- Modal Daftar Jadwal -->
+        <div x-show="showDaftarModal" x-cloak x-transition
+            class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div @click.outside="showDaftarModal = false"
+                class="bg-white rounded-2xl p-8 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
+
+                <h2 class="text-2xl font-bold text-center mb-6">Daftar Pelatihan</h2>
+
+                <form action="{{ route('jadwal.daftar') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="jadwal_id" :value="jadwalId">
+                    <input type="hidden" name="modal" value="daftar">
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Peserta 1</label>
+                        <input type="text" name="pendaftar_1" value="{{ old('pendaftar_1') }}"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Nama Lengkap Peserta">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Peserta 2</label>
+                        <input type="text" name="pendaftar_2" value="{{ old('pendaftar_2') }}"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Nama Lengkap Peserta">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Peserta 3</label>
+                        <input type="text" name="pendaftar_3" value="{{ old('pendaftar_3') }}"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Nama Lengkap Peserta">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Peserta 4</label>
+                        <input type="text" name="pendaftar_4" value="{{ old('pendaftar_4') }}"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Nama Lengkap Peserta">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Peserta 5</label>
+                        <input type="text" name="pendaftar_5" value="{{ old('pendaftar_5') }}"
+                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Masukkan Nama Lengkap Peserta">
+                    </div>
+
+                    <div class="flex justify-end mt-6 space-x-3">
+                        <button type="button" @click="showDaftarModal = false"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg ml-2">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg ml-2">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Footer -->
         @include('master.footer')
     </section>
     <script>
         document.addEventListener("alpine:init", () => {
             Alpine.data("jadwalModal", () => ({
-                showTambahPengajuan: @json($errors->any()),
                 showDetailModal: false,
+                showDaftarModal: @json($errors->any() && old('modal') === 'daftar'),
+                jadwalId: '{{ old('jadwal_id', '') }}',
                 selectedMonthYear: '{{ request()->get('bulan', now()->format('Y-m')) }}',
                 detailJadwal: {
                     topik: '',
@@ -158,11 +277,16 @@
                     this.detailJadwal = data;
                     this.showDetailModal = true;
                 },
+                openDaftar(id) {
+                    this.showDetailModal = false;
+                    this.jadwalId = id;
+                    this.showDaftarModal = true;
+                },
                 filterByMonthYear() {
                     const url = new URL(window.location.href);
                     url.searchParams.set('bulan', this.selectedMonthYear);
                     window.location.href = url.toString();
-                }
+                },
             }))
         });
 
