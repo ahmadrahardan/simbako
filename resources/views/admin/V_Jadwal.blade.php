@@ -70,14 +70,21 @@
                         <h3 class="text-lg font-semibold">Jadwal Pelatihan</h3>
                         <p class="text-sm text-white/80">Temukan jadwal pelatihan sesuai dengan agendamu!</p>
                     </div>
+                    <!-- Filter Bulan & Tahun + Tambahan Opsi Terbaru -->
+                    @php
+                        $currentYear = now()->year;
+                        $currentMonth = now()->month;
+                    @endphp
                     <div>
-                        @php
-                            $currentYear = now()->year;
-                            $currentMonth = now()->month;
-                        @endphp
                         <label class="block text-sm font-light mb-1 text-white">Pilih Bulan & Tahun:</label>
                         <select name="bulan_tahun" x-model="selectedMonthYear" @change="filterByMonthYear"
                             class="bg-green-500 text-white border border-white/40 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-white/50">
+
+                            <!-- Opsi Terbaru -->
+                            <option value="terbaru" {{ request('bulan', 'terbaru') === 'terbaru' ? 'selected' : '' }}>
+                                Terbaru</option>
+
+                            <!-- Opsi Bulan & Tahun -->
                             @for ($y = $currentYear; $y <= $currentYear + 2; $y++)
                                 @for ($m = 1; $m <= 12; $m++)
                                     @php
@@ -96,40 +103,46 @@
 
             <!-- Container Scroll Kartu Pelatihan -->
             <div class="w-full max-w-5xl h-[240px] overflow-y-auto px-2 custom-scrollbar space-y-4">
-                @foreach ($data as $item)
-                    <div class="bg-white/10 border border-white/30 backdrop-blur-md h-[110px] rounded-xl p-5 text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm text-white/70"><i class="fa fa-calendar mr-1"></i>
-                                    {{ $item->tanggal }}</p>
-                                <h4 class="text-lg font-semibold">{{ $item->topik }}</h4>
-                                <p class="text-sm text-white/70"><i class="fa fa-map-marker mr-1"></i>
-                                    {{ $item->lokasi }}</p>
-                            </div>
-                            <div class="flex items-center gap-5">
-                                <div class="flex items-center justify-between gap-3">
-                                    <!-- Tombol Peserta -->
-                                    <button @click="openPeserta('{{ $item->id }}')"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded-md transition">
-                                        Peserta
-                                    </button>
-                                    <!-- Tombol Detail -->
-                                    <button
-                                        @click="openDetail({
+                @if ($data->isEmpty())
+                    <div class="text-white text-center mt-10 text-lg font-semibold">
+                        Tidak ada jadwal untuk bulan ini.
+                    </div>
+                @else
+                    @foreach ($data as $item)
+                        <div
+                            class="bg-white/10 border border-white/30 backdrop-blur-md h-[110px] rounded-xl p-5 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-white/70"><i class="fa fa-calendar mr-1"></i>
+                                        {{ $item->tanggal }}</p>
+                                    <h4 class="text-lg font-semibold">{{ $item->topik }}</h4>
+                                    <p class="text-sm text-white/70"><i class="fa fa-map-marker mr-1"></i>
+                                        {{ $item->lokasi }}</p>
+                                </div>
+                                <div class="flex items-center gap-5">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <!-- Tombol Peserta -->
+                                        <button @click="openPeserta('{{ $item->id }}')"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded-md transition">
+                                            Peserta
+                                        </button>
+                                        <!-- Tombol Detail -->
+                                        <button
+                                            @click="openDetail({
                                             topik: '{{ $item->topik }}',
                                             deskripsi: '{{ $item->deskripsi }}',
                                             tanggal: '{{ $item->tanggal }}',
                                             lokasi: '{{ $item->lokasi }}',
                                             kuota: '{{ $item->kuota }}'
                                         })"
-                                        class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
-                                        Detail
-                                    </button>
-                                </div>
-                                <div class="flex items-center justify-between gap-3">
-                                    <!-- Tombol Edit -->
-                                    <button type="button"
-                                        @click="editJadwal({
+                                            class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
+                                            Detail
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-3">
+                                        <!-- Tombol Edit -->
+                                        <button type="button"
+                                            @click="editJadwal({
                                             id: '{{ $item->id }}',
                                             topik: '{{ $item->topik }}',
                                             deskripsi: '{{ $item->deskripsi }}',
@@ -137,25 +150,26 @@
                                             lokasi: '{{ $item->lokasi }}',
                                             kuota: '{{ $item->kuota }}'
                                         })"
-                                        class="bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-md border-2 border-white/40 flex items-center justify-center">
-                                        <img src="{{ asset('assets/edit.png') }}" alt="edit">
-                                    </button>
-                                    <!-- Tombol Hapus -->
-                                    <form action="{{ route('jadwal.hapus', $item->id) }}" method="POST"
-                                        onsubmit="event.stopPropagation(); return confirm('Yakin ingin menghapus data ini?')"
-                                        class="ignore-click">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="bg-red-600 hover:bg-red-700 text-white p-1 rounded-md border-2 border-white/40 flex items-center justify-center">
-                                            <img src="{{ asset('assets/Trash.png') }}" alt="trash">
+                                            class="bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-md border-2 border-white/40 flex items-center justify-center">
+                                            <img src="{{ asset('assets/edit.png') }}" alt="edit">
                                         </button>
-                                    </form>
+                                        <!-- Tombol Hapus -->
+                                        <form action="{{ route('jadwal.hapus', $item->id) }}" method="POST"
+                                            onsubmit="event.stopPropagation(); return confirm('Yakin ingin menghapus data ini?')"
+                                            class="ignore-click">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="bg-red-600 hover:bg-red-700 text-white p-1 rounded-md border-2 border-white/40 flex items-center justify-center">
+                                                <img src="{{ asset('assets/Trash.png') }}" alt="trash">
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                @endif
             </div>
 
             <!-- Tombol Tambah -->
@@ -440,6 +454,7 @@
                             this.showPesertaModal = true;
                         });
                 },
+                selectedMonthYear: '{{ request()->get('bulan', 'terbaru') }}',
                 filterByMonthYear() {
                     const url = new URL(window.location.href);
                     url.searchParams.set('bulan', this.selectedMonthYear);

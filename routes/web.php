@@ -10,6 +10,7 @@ use App\Http\Controllers\C_Verifikasi;
 use App\Http\Controllers\C_Jadwal;
 use App\Http\Controllers\C_Edukasi;
 use App\Http\Controllers\C_FAQ;
+use App\Http\Controllers\C_Pelatihan;
 use App\Http\Controllers\DokumenController;
 use App\Models\Jadwal;
 
@@ -102,6 +103,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::get('/edukasi/{slug}', [C_Edukasi::class, 'konten'])->middleware(['auth'])->name('edukasi.konten');
+
+// Route Pelatihan
+Route::middleware(['auth', 'user'])->group(function () {
+    Route::get('/pelatihan', [C_Pelatihan::class, 'pelatihan'])->name('V_Pelatihan');
+});
 
 // Route FAQ
 Route::middleware('auth')->group(function () {

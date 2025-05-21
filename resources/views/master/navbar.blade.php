@@ -35,9 +35,10 @@
 
             <a href="{{ route('V_FAQ') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">FAQ</a>
 
-            {{-- Riwayat dan FAQ untuk user --}}
+            {{-- Riwayat dan Pelatihan untuk user --}}
             @unless($isAdmin)
                 <a href="{{ route('V_Riwayat') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Riwayat</a>
+                <a href="{{ route('V_Pelatihan') }}" class="text-white hover:bg-white/10 hover:rounded-lg px-1 hover:border-t hover:border-white">Pelatihan</a>
             @endunless
 
             {{-- Profil --}}

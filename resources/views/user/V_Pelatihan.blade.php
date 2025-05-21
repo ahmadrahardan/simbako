@@ -8,81 +8,31 @@
         <!-- Header -->
         @include('master.navbar')
 
-        <!-- Notifikasi Sukses -->
-        @if (session('success'))
-            <div data-success-alert
-                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
-                <!-- Logo -->
-                <div
-                    class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
-                    <img src="{{ asset('assets/rawlogo.png') }}" alt="Logo" class="h-6 w-6 object-cover">
-                </div>
-
-                <!-- Isi alert -->
-                <div class="flex-grow">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-lg font-bold">Berhasil!</h3>
-                        <button onclick="this.closest('div.fixed').remove()"
-                            class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
-                    </div>
-                    <p class="text-sm mt-1">{{ session('success') }}</p>
-                </div>
-            </div>
-        @endif
-
-        <!-- Notifikasi Gagal Validasi -->
-        @if ($errors->any())
-            <div data-error-alert
-                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
-
-                <!-- Logo -->
-                <div
-                    class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
-                    <img src="{{ asset('assets/rawlogo.png') }}" alt="Logo" class="h-6 w-6 object-cover">
-                </div>
-
-                <!-- Isi alert -->
-                <div class="flex-grow">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-lg font-bold">Alert!</h3>
-                        <button onclick="this.closest('div.fixed').remove()"
-                            class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
-                    </div>
-                    <ul class="text-sm mt-1 list-disc list-inside">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        @endif
-
         <!-- Main Content -->
-        <div class="flex flex-col items-center justify-center min-h-screen pt-20 px-8 relative z-10">
+        <div class="flex flex-col items-center justify-center min-h-screen pt-16 px-8 relative z-10">
             <div class="h-[5%] w-full bg-gradient-to-t from-slate-950 to-transparent absolute bottom-0 z-10"></div>
             <img src="{{ asset('assets/Ornament.png') }}" alt="" class="h-[1012px] w-[1440px] absolute bottom-0">
 
             <!-- Box Header Jadwal -->
-            <div
-                class="w-full max-w-5xl bg-white/10 border border-white/30 backdrop-blur-md rounded-xl p-6 mb-6 text-white">
+            <div class="w-full max-w-5xl bg-white/10 border border-white/30 backdrop-blur-md rounded-xl p-6 mb-6 text-white">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="text-lg font-semibold">Jadwal Pelatihan</h3>
-                        <p class="text-sm text-white/80">Temukan jadwal pelatihan sesuai dengan agendamu!</p>
+                        <h3 class="text-lg font-semibold">Daftar Pelatihan</h3>
+                        <p class="text-sm text-white/80">Temukan pelatihan yang sedang atau telah diikuti</p>
                     </div>
-                    <!-- Filter Bulan & Tahun + Tambahan Opsi Terbaru -->
-                    @php
-                        $currentYear = now()->year;
-                        $currentMonth = now()->month;
-                    @endphp
                     <div>
+                        @php
+                            $currentYear = now()->year;
+                            $currentMonth = now()->month;
+                        @endphp
                         <label class="block text-sm font-light mb-1 text-white">Pilih Bulan & Tahun:</label>
                         <select name="bulan_tahun" x-model="selectedMonthYear" @change="filterByMonthYear"
                             class="bg-green-500 text-white border border-white/40 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-white/50">
 
-                            <!-- Opsi Terbaru -->
+                            <!-- Opsi Terbaru sebagai default -->
                             <option value="terbaru" {{ request('bulan', 'terbaru') === 'terbaru' ? 'selected' : '' }}>
-                                Terbaru</option>
+                                Terbaru
+                            </option>
 
                             <!-- Opsi Bulan & Tahun -->
                             @for ($y = $currentYear; $y <= $currentYear + 2; $y++)
@@ -91,7 +41,7 @@
                                         $value = sprintf('%04d-%02d', $y, $m);
                                         $label = \Carbon\Carbon::createFromDate($y, $m, 1)->translatedFormat('F Y');
                                     @endphp
-                                    <option value="{{ $value }}" @selected($value === request('bulan', now()->format('Y-m')))>
+                                    <option value="{{ $value }}" {{ request('bulan') === $value ? 'selected' : '' }}>
                                         {{ $label }}
                                     </option>
                                 @endfor
@@ -103,40 +53,30 @@
 
             <!-- Container Scroll Kartu Pelatihan -->
             <div class="w-full max-w-5xl h-[240px] overflow-y-auto px-2 custom-scrollbar space-y-4">
-                @if ($data->isEmpty())
-                    <div class="text-white text-center mt-10 text-lg font-semibold">
-                        Tidak ada jadwal untuk bulan ini.
-                    </div>
+                @if ($riwayat->isEmpty())
+                    <p class="text-gray-500">Belum ada pelatihan yang diikuti.</p>
                 @else
-                    @foreach ($data as $item)
-                        <!-- Simulasi 5 card, akan scroll -->
+                    @foreach ($riwayat as $jadwal)
                         <div
-                            class="bg-white/10 border border-white/30 backdrop-blur-md h-[110px] rounded-xl p-5 text-white">
+                            class="bg-white/10 backdrop-blur-md rounded-xl h-[110px] p-5 mb-4 text-white border border-white/30">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-sm text-white/70"><i class="fa fa-calendar mr-1"></i>
-                                        {{ $item->tanggal }}</p>
-                                    <h4 class="text-lg font-semibold">{{ $item->topik }}</h4>
-                                    <p class="text-sm text-white/70"><i class="fa fa-map-marker mr-1"></i>
-                                        {{ $item->lokasi }}</p>
+                                    <p class="text-sm text-white/70"><i
+                                            class="fa fa-calendar mr-1"></i>{{ $jadwal->tanggal }}</p>
+                                    <h4 class="text-lg font-semibold">{{ $jadwal->topik }}</h4>
+                                    <p class="text-sm text-white/70"><i
+                                            class="fa fa-map-marker mr-1"></i>{{ $jadwal->lokasi }}</p>
                                 </div>
-                                <div class="flex items-center justify-between gap-5">
-                                    <button @click="openDaftar('{{ $item->id }}')"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded-md transition">
-                                        Daftar
-                                    </button>
-                                    <button
-                                        @click="openDetail({
-                                        topik: '{{ $item->topik }}',
-                                        deskripsi: '{{ $item->deskripsi }}',
-                                        tanggal: '{{ $item->tanggal }}',
-                                        lokasi: '{{ $item->lokasi }}',
-                                        kuota: '{{ $item->kuota }}'
-                                    })"
-                                        class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
-                                        Detail
-                                    </button>
-                                </div>
+                                <button {{-- @click="openDetail({
+                                                topik: '{{ $item->topik }}',
+                                                deskripsi: '{{ $item->deskripsi }}',
+                                                tanggal: '{{ $item->tanggal }}',
+                                                lokasi: '{{ $item->lokasi }}',
+                                                kuota: '{{ $item->kuota }}'
+                                            })" --}}
+                                    class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
+                                    Detail
+                                </button>
                             </div>
                         </div>
                     @endforeach
@@ -280,7 +220,7 @@
                 showDetailModal: false,
                 showDaftarModal: @json($errors->any() && old('modal') === 'daftar'),
                 jadwalId: '{{ old('jadwal_id', '') }}',
-                selectedMonthYear: '{{ request()->get('bulan', now()->format('Y-m')) }}',
+                selectedMonthYear: '{{ request()->get('bulan', 'terbaru') }}',
                 detailJadwal: {
                     topik: '',
                     deskripsi: '',
@@ -297,7 +237,6 @@
                     this.jadwalId = id;
                     this.showDaftarModal = true;
                 },
-                selectedMonthYear: '{{ request()->get('bulan', 'terbaru') }}',
                 filterByMonthYear() {
                     const url = new URL(window.location.href);
                     url.searchParams.set('bulan', this.selectedMonthYear);

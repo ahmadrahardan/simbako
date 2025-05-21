@@ -14,30 +14,44 @@ class C_Jadwal extends Controller
 {
     public function jadwal(Request $request)
     {
-        $bulan = $request->get('bulan', now()->format('Y-m'));
+        $bulan = $bulan = $request->get('bulan', 'terbaru');
 
-        $tahun = substr($bulan, 0, 4);
-        $bulanAngka = substr($bulan, 5, 2);
+        $query = Jadwal::query();
 
-        $data = Jadwal::whereYear('tanggal', $tahun)
-            ->whereMonth('tanggal', $bulanAngka)
-            ->orderBy('tanggal', 'asc')
-            ->get();
+        if ($bulan === 'terbaru') {
 
+            $query->orderBy('tanggal', 'desc')->limit(5);
+        } else {
+            $tahun = substr($bulan, 0, 4);
+            $bulanAngka = substr($bulan, 5, 2);
+            $query->whereYear('tanggal', $tahun)
+                ->whereMonth('tanggal', $bulanAngka)
+                ->orderBy('tanggal', 'asc');
+        }
+
+        $data = $query->get();
+        
         return view('user.V_Jadwal', compact('data'));
     }
 
     public function adminJadwal(Request $request)
     {
-        $bulan = $request->get('bulan', now()->format('Y-m'));
+        $bulan = $bulan = $request->get('bulan', 'terbaru');
 
-        $tahun = substr($bulan, 0, 4);
-        $bulanAngka = substr($bulan, 5, 2);
+        $query = Jadwal::query();
 
-        $data = Jadwal::whereYear('tanggal', $tahun)
-            ->whereMonth('tanggal', $bulanAngka)
-            ->orderBy('tanggal', 'asc')
-            ->get();
+        if ($bulan === 'terbaru') {
+
+            $query->orderBy('tanggal', 'desc')->limit(5);
+        } else {
+            $tahun = substr($bulan, 0, 4);
+            $bulanAngka = substr($bulan, 5, 2);
+            $query->whereYear('tanggal', $tahun)
+                ->whereMonth('tanggal', $bulanAngka)
+                ->orderBy('tanggal', 'asc');
+        }
+
+        $data = $query->get();
 
         return view('admin.V_Jadwal', compact('data'));
     }
