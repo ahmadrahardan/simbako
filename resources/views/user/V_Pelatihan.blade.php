@@ -54,7 +54,9 @@
             <!-- Container Scroll Kartu Pelatihan -->
             <div class="w-full max-w-5xl h-[240px] overflow-y-auto px-2 custom-scrollbar space-y-4">
                 @if ($riwayat->isEmpty())
-                    <p class="text-gray-500">Belum ada pelatihan yang diikuti.</p>
+                    <div class="text-white text-center mt-10 text-lg font-semibold">
+                        Tidak ada pelatihan yang diikuti pada bulan ini.
+                    </div>
                 @else
                     @foreach ($riwayat as $jadwal)
                         <div
@@ -67,13 +69,15 @@
                                     <p class="text-sm text-white/70"><i
                                             class="fa fa-map-marker mr-1"></i>{{ $jadwal->lokasi }}</p>
                                 </div>
-                                <button {{-- @click="openDetail({
-                                                topik: '{{ $item->topik }}',
-                                                deskripsi: '{{ $item->deskripsi }}',
-                                                tanggal: '{{ $item->tanggal }}',
-                                                lokasi: '{{ $item->lokasi }}',
-                                                kuota: '{{ $item->kuota }}'
-                                            })" --}}
+                                <button
+                                    @click="openDetail({
+                                        id: '{{ $jadwal->id }}',
+                                                topik: '{{ $jadwal->topik }}',
+                                                deskripsi: '{{ $jadwal->deskripsi }}',
+                                                tanggal: '{{ $jadwal->tanggal }}',
+                                                lokasi: '{{ $jadwal->lokasi }}',
+                                                kuota: '{{ $jadwal->kuota }}'
+                                            })"
                                     class="bg-green-500 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
                                     Detail
                                 </button>
@@ -139,75 +143,23 @@
                     </div>
                 </div>
 
+                <template x-if="pesertaList.length > 0">
+                    <ul class="space-y-2">
+                        <template x-for="(peserta, index) in pesertaList" :key="index">
+                            <li class="border-b pb-2 text-gray-800">
+                                <span class="font-semibold">Peserta <span x-text="index + 1"></span>:</span>
+                                <span x-text="peserta"></span>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+
                 <div class="flex justify-end mt-6">
                     <button @click="showDetailModal = false"
                         class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold">
                         Tutup
                     </button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Modal Daftar Jadwal -->
-        <div x-show="showDaftarModal" x-cloak x-transition
-            class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div @click.outside="showDaftarModal = false"
-                class="bg-white rounded-2xl p-8 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
-                style="background-image: url('{{ asset('assets/big_bg.png') }}')">
-
-                <h2 class="text-2xl font-bold text-center mb-6">Daftar Pelatihan</h2>
-
-                <form action="{{ route('jadwal.daftar') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                    @csrf
-                    <input type="hidden" name="jadwal_id" :value="jadwalId">
-                    <input type="hidden" name="modal" value="daftar">
-
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Peserta 1</label>
-                        <input type="text" name="pendaftar_1" value="{{ old('pendaftar_1') }}"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Nama Lengkap Peserta">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Peserta 2</label>
-                        <input type="text" name="pendaftar_2" value="{{ old('pendaftar_2') }}"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Nama Lengkap Peserta">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Peserta 3</label>
-                        <input type="text" name="pendaftar_3" value="{{ old('pendaftar_3') }}"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Nama Lengkap Peserta">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Peserta 4</label>
-                        <input type="text" name="pendaftar_4" value="{{ old('pendaftar_4') }}"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Nama Lengkap Peserta">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Peserta 5</label>
-                        <input type="text" name="pendaftar_5" value="{{ old('pendaftar_5') }}"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Masukkan Nama Lengkap Peserta">
-                    </div>
-
-                    <div class="flex justify-end mt-6 space-x-3">
-                        <button type="button" @click="showDaftarModal = false"
-                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg ml-2">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg ml-2">
-                            Simpan
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
 
@@ -221,6 +173,7 @@
                 showDaftarModal: @json($errors->any() && old('modal') === 'daftar'),
                 jadwalId: '{{ old('jadwal_id', '') }}',
                 selectedMonthYear: '{{ request()->get('bulan', 'terbaru') }}',
+                pesertaList: [],
                 detailJadwal: {
                     topik: '',
                     deskripsi: '',
@@ -231,11 +184,26 @@
                 openDetail(data) {
                     this.detailJadwal = data;
                     this.showDetailModal = true;
+                    fetch(`/api/peserta/${data.id}`)
+                        .then(res => res.json())
+                        .then(peserta => {
+                            this.pesertaList = peserta;
+                        })
+                        .catch(() => {
+                            this.pesertaList = [];
+                        });
                 },
-                openDaftar(id) {
-                    this.showDetailModal = false;
-                    this.jadwalId = id;
-                    this.showDaftarModal = true;
+                openPeserta(jadwalId) {
+                    fetch(`/api/peserta/${jadwalId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            this.pesertaList = data;
+                            this.showPesertaModal = true;
+                        })
+                        .catch(() => {
+                            this.pesertaList = [];
+                            this.showPesertaModal = true;
+                        });
                 },
                 filterByMonthYear() {
                     const url = new URL(window.location.href);
