@@ -14,25 +14,31 @@ class C_Jadwal extends Controller
 {
     public function jadwal(Request $request)
     {
-        $bulan = $bulan = $request->get('bulan', 'terbaru');
+        $bulan = $request->get('bulan', 'terbaru');
 
         $query = Jadwal::query();
 
         if ($bulan === 'terbaru') {
-
             $query->orderBy('tanggal', 'desc')->limit(5);
         } else {
             $tahun = substr($bulan, 0, 4);
             $bulanAngka = substr($bulan, 5, 2);
+
             $query->whereYear('tanggal', $tahun)
                 ->whereMonth('tanggal', $bulanAngka)
                 ->orderBy('tanggal', 'asc');
         }
 
         $data = $query->get();
-        
-        return view('user.V_Jadwal', compact('data'));
+
+        $userId = auth()->id();
+        $sudahDaftar = \App\Models\Pendaftaran::where('user_id', $userId)
+            ->pluck('jadwal_id')
+            ->toArray();
+
+        return view('user.V_Jadwal', compact('data', 'sudahDaftar'));
     }
+
 
     public function adminJadwal(Request $request)
     {

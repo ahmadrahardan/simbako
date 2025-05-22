@@ -121,10 +121,12 @@
                                         {{ $item->lokasi }}</p>
                                 </div>
                                 <div class="flex items-center justify-between gap-5">
-                                    <button @click="openDaftar('{{ $item->id }}')"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded-md transition">
-                                        Daftar
-                                    </button>
+                                    @if (in_array($item->id, $sudahDaftar))
+                                        <button disabled class="bg-gray-400 text-white px-4 py-1 rounded-md">Terdaftar</button>
+                                    @else
+                                        <button @click="openDaftar('{{ $item->id }}')"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded-md">Daftar</button>
+                                    @endif
                                     <button
                                         @click="openDetail({
                                         topik: '{{ $item->topik }}',

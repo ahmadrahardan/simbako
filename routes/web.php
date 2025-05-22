@@ -13,6 +13,7 @@ use App\Http\Controllers\C_FAQ;
 use App\Http\Controllers\C_Pelatihan;
 use App\Http\Controllers\DokumenController;
 use App\Models\Jadwal;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,8 +72,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/jadwal/simpan', [C_Jadwal::class, 'simpan'])->name('jadwal.simpan');
     Route::put('/jadwal/{id}', [C_Jadwal::class, 'update'])->name('jadwal.update');
     Route::delete('/jadwal/{id}', [C_Jadwal::class, 'hapus'])->name('jadwal.hapus');
-    Route::get('/api/peserta/{jadwal}', function ($jadwalId) {
-        $jadwal = Jadwal::with('pendaftaran.peserta')->find($jadwalId);
+    Route::get('/api/admin/peserta/{jadwal}', function ($jadwalId) {
+        $jadwal = \App\Models\Jadwal::with('pendaftaran.user', 'pendaftaran.peserta')->find($jadwalId);
 
         if (!$jadwal) {
             return response()->json([], 404);
@@ -82,7 +83,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         foreach ($jadwal->pendaftaran as $pendaftaran) {
             foreach ($pendaftaran->peserta as $peserta) {
-                $pesertaList[] = $peserta->nama;
+                $pesertaList[] = [
+                    'nama' => $peserta->nama,
+                    'user' => $pendaftaran->user->nama ?? 'Unknown'
+                ];
             }
         }
 
@@ -107,6 +111,26 @@ Route::get('/edukasi/{slug}', [C_Edukasi::class, 'konten'])->middleware(['auth']
 // Route Pelatihan
 Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/pelatihan', [C_Pelatihan::class, 'pelatihan'])->name('V_Pelatihan');
+    Route::get('/api/peserta/{jadwal}', function ($jadwalId) {
+        $jadwal = Jadwal::with(['pendaftaran.peserta'])->find($jadwalId);
+
+        if (!$jadwal) {
+            return response()->json([], 404);
+        }
+
+        $userId = Auth::id();
+        $pesertaList = [];
+
+        foreach ($jadwal->pendaftaran as $pendaftaran) {
+            if ($pendaftaran->user_id === $userId) {
+                foreach ($pendaftaran->peserta as $peserta) {
+                    $pesertaList[] = $peserta->nama;
+                }
+            }
+        }
+
+        return response()->json($pesertaList);
+    });
 });
 
 // Route FAQ

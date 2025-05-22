@@ -376,7 +376,7 @@
         <div x-show="showPesertaModal" x-cloak x-transition
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div @click.outside="showPesertaModal = false"
-                class="bg-white rounded-2xl px-8 py-5 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                class="bg-white rounded-2xl px-8 py-5 w-[800px] max-w-full max-h-[85vh] overflow-y-auto hide-scrollbar relative text-gray-800 shadow-xl bg-fit bg-center"
                 style="background-image: url('{{ asset('assets/big_bg.png') }}')">
 
                 <h2 class="text-2xl font-bold text-center mb-6">Daftar Peserta</h2>
@@ -385,15 +385,12 @@
                     <p class="text-center text-gray-600">Belum ada peserta terdaftar untuk jadwal ini.</p>
                 </template>
 
-                <template x-if="pesertaList.length > 0">
-                    <ul class="space-y-2">
-                        <template x-for="(peserta, index) in pesertaList" :key="index">
-                            <li class="border-b pb-2 text-gray-800">
-                                <span class="font-semibold">Peserta <span x-text="index + 1"></span>:</span>
-                                <span x-text="peserta"></span>
-                            </li>
-                        </template>
-                    </ul>
+                <template x-for="(peserta, index) in pesertaList" :key="index">
+                    <li class="pb-2 text-gray-800">
+                        <span class="font-semibold">Peserta <span x-text="index + 1"></span>:</span>
+                        <span x-text="peserta.nama"></span>
+                        <span class="block text-sm text-gray-500 ml-4">oleh: <span x-text="peserta.user"></span></span>
+                    </li>
                 </template>
 
                 <div class="flex justify-end mt-6">
@@ -403,6 +400,20 @@
                     </button>
                 </div>
             </div>
+            <style>
+                /* Hilangkan scrollbar tapi tetap bisa scroll */
+                .hide-scrollbar {
+                    scrollbar-width: none;
+                    /* Firefox */
+                    -ms-overflow-style: none;
+                    /* IE 10+ */
+                }
+
+                .hide-scrollbar::-webkit-scrollbar {
+                    display: none;
+                    /* Webkit (Chrome, Safari) */
+                }
+            </style>
         </div>
 
         <!-- Footer -->
@@ -443,7 +454,7 @@
                     this.showTambahJadwal = true;
                 },
                 openPeserta(jadwalId) {
-                    fetch(`/api/peserta/${jadwalId}`)
+                    fetch(`/api/admin/peserta/${jadwalId}`)
                         .then(res => res.json())
                         .then(data => {
                             this.pesertaList = data;

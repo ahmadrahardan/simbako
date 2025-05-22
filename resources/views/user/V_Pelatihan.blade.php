@@ -1,5 +1,5 @@
 @extends('master.public')
-@section('title', 'Jadwal')
+@section('title', 'Pelatihan')
 @section('content')
 
     <section x-data="jadwalModal" class="font-sans min-h-screen bg-cover bg-center relative"
@@ -71,7 +71,7 @@
                                 </div>
                                 <button
                                     @click="openDetail({
-                                        id: '{{ $jadwal->id }}',
+                                                id: '{{ $jadwal->id }}',
                                                 topik: '{{ $jadwal->topik }}',
                                                 deskripsi: '{{ $jadwal->deskripsi }}',
                                                 tanggal: '{{ $jadwal->tanggal }}',
@@ -110,7 +110,7 @@
         <div x-show="showDetailModal" x-cloak x-transition
             class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div @click.outside="showDetailModal = false"
-                class="bg-white rounded-2xl px-8 py-5 w-[800px] max-w-full relative text-gray-800 shadow-xl bg-fit bg-center"
+                class="bg-white rounded-2xl px-8 py-5 w-[800px] max-w-full max-h-[85vh] overflow-y-auto hide-scrollbar relative text-gray-800 shadow-xl bg-fit bg-center"
                 style="background-image: url('{{ asset('assets/big_bg.png') }}')">
 
                 <h2 class="text-2xl font-bold text-center mb-6">Detail Pelatihan</h2>
@@ -121,38 +121,52 @@
                         <input type="text" x-model="detailJadwal.topik" readonly
                             class="w-full border rounded-lg px-4 py-2 bg-gray-100">
                     </div>
+
                     <div>
                         <label class="block text-sm font-semibold mb-1">Deskripsi</label>
-                        <textarea x-model="detailJadwal.deskripsi" readonly class="w-full border rounded-lg px-4 py-2 bg-gray-100 resize-none"
+                        <textarea x-model="detailJadwal.deskripsi" readonly
+                            class="w-full border rounded-lg px-4 py-2 bg-gray-100 resize-none overflow-y-auto" style="max-height: 150px;"
                             rows="3"></textarea>
                     </div>
+
                     <div>
                         <label class="block text-sm font-semibold mb-1">Tanggal</label>
                         <input type="text" x-model="detailJadwal.tanggal" readonly
                             class="w-full border rounded-lg px-4 py-2 bg-gray-100">
                     </div>
+
                     <div>
                         <label class="block text-sm font-semibold mb-1">Lokasi</label>
                         <input type="text" x-model="detailJadwal.lokasi" readonly
                             class="w-full border rounded-lg px-4 py-2 bg-gray-100">
                     </div>
+
                     <div>
                         <label class="block text-sm font-semibold mb-1">Kuota</label>
                         <input type="text" x-model="detailJadwal.kuota" readonly
                             class="w-full border rounded-lg px-4 py-2 bg-gray-100">
                     </div>
-                </div>
 
-                <template x-if="pesertaList.length > 0">
-                    <ul class="space-y-2">
-                        <template x-for="(peserta, index) in pesertaList" :key="index">
-                            <li class="border-b pb-2 text-gray-800">
-                                <span class="font-semibold">Peserta <span x-text="index + 1"></span>:</span>
-                                <span x-text="peserta"></span>
-                            </li>
-                        </template>
-                    </ul>
-                </template>
+                    <!-- Peserta -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Peserta</label>
+                        <div class="max-h-48 overflow-y-auto border rounded-lg bg-gray-50 p-3">
+                            <template x-if="pesertaList.length > 0">
+                                <ul class="space-y-2">
+                                    <template x-for="(peserta, index) in pesertaList" :key="index">
+                                        <li class="pb-2 text-gray-800">
+                                            <span class="font-semibold">Peserta <span x-text="index + 1"></span>:</span>
+                                            <span x-text="peserta"></span>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <template x-if="pesertaList.length === 0">
+                                <p class="text-gray-500 italic">Belum ada peserta yang terdaftar.</p>
+                            </template>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="flex justify-end mt-6">
                     <button @click="showDetailModal = false"
@@ -161,7 +175,22 @@
                     </button>
                 </div>
             </div>
+            <style>
+                /* Hilangkan scrollbar tapi tetap bisa scroll */
+                .hide-scrollbar {
+                    scrollbar-width: none;
+                    /* Firefox */
+                    -ms-overflow-style: none;
+                    /* IE 10+ */
+                }
+
+                .hide-scrollbar::-webkit-scrollbar {
+                    display: none;
+                    /* Webkit (Chrome, Safari) */
+                }
+            </style>
         </div>
+
 
         <!-- Footer -->
         @include('master.footer')
@@ -187,22 +216,12 @@
                     fetch(`/api/peserta/${data.id}`)
                         .then(res => res.json())
                         .then(peserta => {
-                            this.pesertaList = peserta;
+                            // transform object ke array jika perlu
+                            this.pesertaList = Array.isArray(peserta) ? peserta : Object.values(
+                                peserta).filter(Boolean);
                         })
                         .catch(() => {
                             this.pesertaList = [];
-                        });
-                },
-                openPeserta(jadwalId) {
-                    fetch(`/api/peserta/${jadwalId}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            this.pesertaList = data;
-                            this.showPesertaModal = true;
-                        })
-                        .catch(() => {
-                            this.pesertaList = [];
-                            this.showPesertaModal = true;
                         });
                 },
                 filterByMonthYear() {
