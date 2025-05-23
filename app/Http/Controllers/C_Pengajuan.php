@@ -19,9 +19,15 @@ class C_Pengajuan extends Controller
         return view('user.V_Pengajuan', compact('data'));
     }
 
-    public function adminPengajuan()
+    public function adminPengajuan(Request $request)
     {
-        $data = Pengajuan::with('user')->latest()->get();
+        $query = Pengajuan::with('user');
+
+        if ($request->has('status') && in_array($request->status, ['Proses', 'Disetujui', 'Ditolak'])) {
+            $query->where('status', $request->status);
+        }
+
+        $data = $query->orderByDesc('created_at')->get();
 
         return view('admin.V_Pengajuan', compact('data'));
     }
@@ -62,6 +68,6 @@ class C_Pengajuan extends Controller
         $pengajuan->status = $request->status;
         $pengajuan->save();
 
-        return response()->json(['message' => 'Status diperbarui']);
+        return redirect()->back()->with('success', 'Status berhasil diubah.');
     }
 }

@@ -161,7 +161,7 @@
                     @csrf
                     <div>
                         <label class="block text-sm font-semibold mb-1">Topik</label>
-                        <input type="text" name="topik"
+                        <input type="text" name="topik" value="{{ old('topik') }}"
                             class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Masukkan Topik">
                     </div>
@@ -239,7 +239,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- Footer -->
         @include('master.footer')

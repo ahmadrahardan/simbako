@@ -36,7 +36,18 @@
             <img src="{{ asset('assets/Ornament.png') }}" alt="" class="h-[1012px] w-[1440px] absolute bottom-0">
 
             <div class="bg-white/10 backdrop-blur-md border border-white/60 rounded-2xl shadow-lg p-6 w-full max-w-5xl">
-                <h2 class="text-xl font-semibold text-white pl-4 mb-4">Pengajuan Pelatihan</h2>
+                <div class="flex justify-between">
+                    <h2 class="text-xl font-semibold text-white pl-4 mb-4">Pengajuan Pelatihan</h2>
+                    <div class="flex justify-end mb-4 pr-4">
+                        <select x-model="selectedStatus" @change="filterByStatus"
+                            class="bg-green-600 text-white border border-white/40 px-4 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-white/50">
+                            <option value="">Semua Status</option>
+                            <option value="Proses">Proses</option>
+                            <option value="Disetujui">Disetujui</option>
+                            <option value="Ditolak">Ditolak</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="overflow-y-auto max-h-[300px] min-h-[300px] px-4 custom-scrollbar">
                     <table class="min-w-full text-sm text-white">
                         <thead>
@@ -180,38 +191,42 @@
                             <span x-text="detailPengajuan.status"></span>
                         </div>
                     </div>
-                    <div class="flex mt-6 w-[30%] ml-auto relative" x-data="{ showDropdown: false, selectedStatus: '', options: ['Disetujui', 'Ditolak'] }">
-                        <!-- Tombol utama -->
-                        <button @click="showDropdown = !showDropdown"
-                            class="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded-lg w-full font-semibold transition">
-                            Ubah Status
-                        </button>
-
-                        <!-- Dropdown -->
-                        <div x-show="showDropdown" x-cloak x-transition
-                            class="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-xl border p-4 space-y-3 w-full z-50">
-                            <!-- Opsi Status -->
-                            <template x-for="option in options" :key="option">
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" x-model="selectedStatus" :value="option"
-                                        class="form-radio text-green-600 focus:ring-green-500" />
-                                    <span
-                                        :class="{
-                                            'text-green-700': option === 'Disetujui',
-                                            'text-red-600': option === 'Ditolak'
-                                        }"
-                                        x-text="option"></span>
-                                </label>
-                            </template>
-
-                            <!-- Tombol Simpan -->
-                            <button @click="kirimStatusBaru(selectedStatus); showDropdown = false"
-                                :disabled="!selectedStatus"
-                                class="bg-green-700 hover:bg-green-800 text-white px-4 py-1 rounded-md font-semibold w-full mt-2 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                                Simpan
+                    <template x-if="detailPengajuan.status === 'Proses'">
+                        <div class="flex mt-6 w-[30%] ml-auto relative" x-data="{ showDropdown: false }">
+                            <!-- Tombol utama -->
+                            <button @click="showDropdown = !showDropdown"
+                                class="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded-lg w-full font-semibold transition">
+                                Ubah Status
                             </button>
+
+                            <!-- Dropdown -->
+                            <div x-show="showDropdown" x-cloak x-transition
+                                class="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-xl border p-4 space-y-3 w-full z-50">
+                                <!-- Tombol Status -->
+                                <form method="POST"
+                                    x-bind:action="'/admin/pengajuan/update-status/' + detailPengajuan.id">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="status" value="Disetujui">
+                                    <button type="submit"
+                                        class="w-full text-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-semibold">
+                                        Setujui
+                                    </button>
+                                </form>
+
+                                <form method="POST"
+                                    x-bind:action="'/admin/pengajuan/update-status/' + detailPengajuan.id">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="status" value="Ditolak">
+                                    <button type="submit"
+                                        class="w-full text-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-semibold">
+                                        Tolak
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    </template>
                 </div>
 
                 <div class="flex justify-end mt-6">
@@ -227,17 +242,10 @@
         @include('master.footer')
     </section>
     <script>
-        // if (performance.getEntriesByType("navigation")[0].type === "back_forward") {
-        //     const successAlert = document.querySelector('[data-success-alert]');
-        //     if (successAlert) successAlert.remove();
-
-        //     const errorAlert = document.querySelector('[data-error-alert]');
-        //     if (errorAlert) errorAlert.remove();
-        // }
-
         document.addEventListener("alpine:init", () => {
             Alpine.data("pengajuanModal", () => ({
                 showDetailModal: false,
+                selectedStatus: '{{ request()->get('status', '') }}',
                 detailPengajuan: {
                     id: '',
                     nama: '',
@@ -250,29 +258,11 @@
                     this.detailPengajuan = data;
                     this.showDetailModal = true;
                 },
-                kirimStatusBaru(statusBaru) {
-                    fetch(`/admin/pengajuan/update-status/${this.detailPengajuan.id}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                    .content
-                            },
-                            body: JSON.stringify({
-                                status: statusBaru
-                            })
-                        })
-                        .then(response => {
-                            if (!response.ok) throw new Error('Gagal memperbarui status');
-                            return response.json();
-                        })
-                        .then(data => {
-                            this.detailPengajuan.status = statusBaru;
-                            this.showDetailModal = false;
-                            window.location.reload();
-                        })
-                        .catch(error => alert(error.message));
-                }
+                filterByStatus() {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('status', this.selectedStatus);
+                    window.location.href = url.toString();
+                },
             }))
         });
     </script>

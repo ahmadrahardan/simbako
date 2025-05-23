@@ -89,12 +89,12 @@
                 <div class="flex gap-8">
                     <div class="w-1/2">
                         <label class="block mb-1 text-gray-700 font-medium">Nama</label>
-                        <input type="text" name="nama" placeholder="Masukkan nama lengkap"
+                        <input type="text" name="nama" placeholder="Masukkan nama lengkap" value="{{ old('nama') }}"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500">
                     </div>
                     <div class="w-1/2">
                         <label class="block mb-1 text-gray-700 font-medium">Username</label>
-                        <input type="text" name="username" placeholder="Masukkan username"
+                        <input type="text" name="username" placeholder="Masukkan username" value="{{ old('username') }}"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500">
                     </div>
                 </div>
@@ -102,12 +102,12 @@
                 <div class="flex gap-8">
                     <div class="w-1/2">
                         <label class="block mb-1 text-gray-700 font-medium">Email</label>
-                        <input type="email" name="email" placeholder="Masukkan email"
+                        <input type="email" name="email" placeholder="Masukkan email" value="{{ old('email') }}"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500">
                     </div>
                     <div class="w-1/2">
                         <label class="block mb-1 text-gray-700 font-medium">Nomor Telepon</label>
-                        <input type="text" name="telepon" placeholder="Masukkan nomor telepon"
+                        <input type="text" name="telepon" placeholder="Masukkan nomor telepon" value="{{ old('telepon') }}"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500">
                     </div>
                 </div>
@@ -115,12 +115,12 @@
                 <div class="flex gap-8">
                     <div class="w-1/2">
                         <label class="block mb-1 text-gray-700 font-medium">Nomor SIINAS</label>
-                        <input type="text" name="siinas" placeholder="Nomor SIINAS"
+                        <input type="text" name="siinas" placeholder="Nomor SIINAS" value="{{ old('siinas') }}"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500">
                     </div>
                     <div class="w-1/2">
                         <label class="block mb-1 text-gray-700 font-medium">Nomor KBLI</label>
-                        <input type="text" name="kbli" placeholder="Nomor KBLI"
+                        <input type="text" name="kbli" placeholder="Nomor KBLI" value="{{ old('kbli') }}"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500">
                     </div>
                 </div>
@@ -141,7 +141,7 @@
                 <div>
                     <label class="block mb-1 text-gray-700 font-medium">Alamat</label>
                     <textarea name="alamat" rows="2" placeholder="Masukkan alamat"
-                        class="w-full border border-gray-300 resize-none rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500"></textarea>
+                        class="w-full border border-gray-300 resize-none rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500">{{ old('alamat') }}</textarea>
                 </div>
 
                 <div class="flex m-auto w-1/3">

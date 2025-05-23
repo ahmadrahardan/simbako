@@ -20,6 +20,14 @@ class C_Verifikasi extends Controller
         $user->verifikasi = true;
         $user->save();
 
-        return response()->json(['message' => 'User berhasil diverifikasi']);
+        return redirect()->back()->with('success', 'User berhasil diverifikasi.');
+    }
+
+    public function hapusUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User berhasil ditolak.');
     }
 }

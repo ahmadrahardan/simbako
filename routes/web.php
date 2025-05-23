@@ -151,6 +151,7 @@ Route::get('/riwayat', [C_Riwayat::class, 'riwayat'])->middleware(['auth', 'user
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/verifikasi', [C_Verifikasi::class, 'verifikasi'])->name('V_Verifikasi');
     Route::put('/admin/verifikasi/{id}', [C_Verifikasi::class, 'verifikasiUser']);
+    Route::delete('/admin/tolak/{id}', [C_Verifikasi::class, 'hapusUser']);
 });
 
 // Route Download

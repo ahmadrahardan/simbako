@@ -78,7 +78,7 @@
                     <div>
                         <label class="block text-sm font-light mb-1 text-white">Pilih Bulan & Tahun:</label>
                         <select name="bulan_tahun" x-model="selectedMonthYear" @change="filterByMonthYear"
-                            class="bg-green-500 text-white border border-white/40 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-white/50">
+                            class="bg-green-600 text-white border border-white/40 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-white/50">
 
                             <!-- Opsi Terbaru -->
                             <option value="terbaru" {{ request('bulan', 'terbaru') === 'terbaru' ? 'selected' : '' }}>

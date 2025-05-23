@@ -147,15 +147,44 @@
                         </div>
                         <div class="col-span-2">
                             <label class="text-sm font-semibold mb-1">Alamat</label>
-                            <textarea x-model="detailUser.alamat" rows="2" class="resize-none w-full bg-gray-100 border rounded-lg px-4 py-2" readonly></textarea>
+                            <textarea x-model="detailUser.alamat" rows="2" class="resize-none w-full bg-gray-100 border rounded-lg px-4 py-2"
+                                readonly></textarea>
                         </div>
                     </div>
 
                     <div class="flex justify-end mt-6 space-x-3">
-                        <button @click="verifikasiUser(detailUser.id)"
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold">
-                            Verifikasi
-                        </button>
+                        <div class="relative" x-data="{ openDropdown: false }">
+                            <!-- Tombol utama -->
+                            <button @click="openDropdown = !openDropdown"
+                                class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition">
+                                Tindakan
+                            </button>
+
+                            <!-- Dropdown -->
+                            <div x-show="openDropdown" @click.outside="openDropdown = false" x-cloak
+                                class="absolute right-0 mt-2 bg-white shadow-lg rounded-md w-40 z-50">
+                                <!-- Verifikasi -->
+                                <form method="POST" :action="'/admin/verifikasi/' + detailUser.id">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit"
+                                        class="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-green-100">
+                                        Verifikasi
+                                    </button>
+                                </form>
+
+                                <!-- Tolak -->
+                                <form method="POST" :action="'/admin/tolak/' + detailUser.id"
+                                    onsubmit="return confirm('Yakin ingin menolak dan menghapus user ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-100">
+                                        Tolak
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                         <button @click="showDetailModal = false"
                             class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold">
                             Tutup
@@ -164,7 +193,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- Footer -->
         @include('master.footer')
@@ -187,25 +215,6 @@
                     this.detailUser = user;
                     this.showDetailModal = true;
                 },
-                verifikasiUser(userId) {
-                    fetch(`/admin/verifikasi/${userId}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                    .content
-                            }
-                        })
-                        .then(response => {
-                            if (!response.ok) throw new Error('Gagal memverifikasi user');
-                            return response.json();
-                        })
-                        .then(data => {
-                            this.showDetailModal = false;
-                            window.location.reload();
-                        })
-                        .catch(error => alert(error.message));
-                }
             }))
         });
     </script>
