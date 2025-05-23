@@ -8,10 +8,10 @@
         <!-- Header -->
         @include('master.navbar')
 
-        <!-- Notifikasi Sukses -->
         @if (session('success'))
-            <div data-success-alert
-                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" data-success-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up transition-all duration-500 ease-in-out">
+
                 <!-- Logo -->
                 <div
                     class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
@@ -22,7 +22,7 @@
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
                         <h3 class="text-lg font-bold">Berhasil!</h3>
-                        <button onclick="this.closest('div.fixed').remove()"
+                        <button @click="show = false"
                             class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
                     </div>
                     <p class="text-sm mt-1">{{ session('success') }}</p>
@@ -156,19 +156,20 @@
                         <div class="relative" x-data="{ openDropdown: false }">
                             <!-- Tombol utama -->
                             <button @click="openDropdown = !openDropdown"
-                                class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition">
-                                Tindakan
+                                class="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded-lg font-semibold transition">
+                                Verifikasi
                             </button>
 
                             <!-- Dropdown -->
                             <div x-show="openDropdown" @click.outside="openDropdown = false" x-cloak
-                                class="absolute right-0 mt-2 bg-white shadow-lg rounded-md w-40 z-50">
+                                class="absolute right-0 mt-2 bg-white shadow-lg rounded-xl border px-4 py-3 flex gap-3 z-50">
+
                                 <!-- Verifikasi -->
                                 <form method="POST" :action="'/admin/verifikasi/' + detailUser.id">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit"
-                                        class="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-green-100">
+                                        class="text-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-semibold">
                                         Verifikasi
                                     </button>
                                 </form>
@@ -179,11 +180,12 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-100">
+                                        class="text-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-semibold">
                                         Tolak
                                     </button>
                                 </form>
                             </div>
+
                         </div>
                         <button @click="showDetailModal = false"
                             class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold">

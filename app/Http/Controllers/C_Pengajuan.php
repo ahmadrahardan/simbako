@@ -52,10 +52,16 @@ class C_Pengajuan extends Controller
 
         $filePath = $request->file('dokumen')->store('dokumen_pengajuan', 'public');
 
+        // Generate kode: IHT-0001, IHT-0002, dst
+        $last = \App\Models\Pengajuan::latest('id')->first();
+        $nextNumber = $last ? $last->id + 1 : 1;
+        $kode = 'IHT-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
         Pengajuan::create([
             'user_id' => Auth::id(),
             'topik' => $validated['topik'],
             'dokumen' => $filePath,
+            'kode' => $kode,
         ]);
 
         return redirect()->back()->with('success', 'Pengajuan berhasil dikirim!');
@@ -63,9 +69,13 @@ class C_Pengajuan extends Controller
 
     public function ubahStatus(Request $request, $id)
     {
-        $request->validate(['status' => 'required|in:Disetujui,Ditolak']);
+        $request->validate([
+            'status' => 'required|in:Disetujui,Ditolak',
+            'feedback' => 'nullable|string|max:1000',
+        ]);
         $pengajuan = Pengajuan::findOrFail($id);
         $pengajuan->status = $request->status;
+        $pengajuan->feedback = $request->feedback;
         $pengajuan->save();
 
         return redirect()->back()->with('success', 'Status berhasil diubah.');

@@ -13,7 +13,7 @@ class Pengajuan extends Model
 
     protected $table = 'pengajuan';
 
-    protected $fillable = ['user_id', 'topik', 'dokumen'];
+    protected $fillable = ['user_id', 'kode', 'topik', 'dokumen', 'feedback'];
 
     public function user(): BelongsTo
     {

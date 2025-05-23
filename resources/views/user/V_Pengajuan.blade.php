@@ -70,7 +70,7 @@
                             <tr class="border-b border-white/60 text-left">
                                 <th class="p-3">No.</th>
                                 <th class="p-3">Tanggal</th>
-                                <th class="p-3">ID Pengajuan</th>
+                                <th class="p-3">Kode Pengajuan</th>
                                 <th class="p-3">Status</th>
                                 <th class="p-3">Topik</th>
                             </tr>
@@ -85,7 +85,7 @@
                                             {{ $item->created_at->format('d-m-Y') }}
                                         </div>
                                     </td>
-                                    <td class="p-3">{{ $item->id }}</td>
+                                    <td class="p-3">{{ $item->kode }}</td>
                                     <td class="p-3">
                                         <div class="flex items-center gap-2">
                                             <span class="w-3 h-3 rounded-full bg-blue-500"></span>
@@ -98,6 +98,7 @@
                                         <button
                                             @click="openDetail({
                                             id: '{{ $item->id }}',
+                                            kode: '{{ $item->kode }}',
                                             topik: '{{ $item->topik }}',
                                             dokumen: '{{ $item->dokumen }}',
                                             status: '{{ $item->status }}'
@@ -199,8 +200,8 @@
 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold mb-1">ID Pengajuan</label>
-                        <input type="text" x-model="detailPengajuan.id" readonly
+                        <label class="block text-sm font-semibold mb-1">Kode Pengajuan</label>
+                        <input type="text" x-model="detailPengajuan.kode" readonly
                             class="w-full border rounded-lg px-4 py-2 bg-gray-100">
                     </div>
                     <div>
@@ -259,6 +260,7 @@
                 detailPengajuan: {
                     id: '',
                     topik: '',
+                    kode: '',
                     dokumen: '',
                     status: '',
                 },
