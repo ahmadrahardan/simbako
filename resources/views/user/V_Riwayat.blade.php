@@ -36,7 +36,7 @@
                                             {{ $item->created_at->format('d-m-Y') }}
                                         </div>
                                     </td>
-                                    <td class="p-3">{{ $item->id }}</td> {{-- atau $item->kode jika ada --}}
+                                    <td class="p-3">{{ $item->kode }}</td> 
                                     <td class="p-3">
                                         <div class="flex items-center gap-2">
                                             @php
@@ -56,6 +56,8 @@
                                             @click="openDetail({
                                             id: '{{ $item->id }}',
                                             topik: '{{ $item->topik }}',
+                                            kode: '{{ $item->kode }}',
+                                            feedback: '{{ $item->feedback }}',
                                             dokumen: '{{ $item->dokumen }}',
                                             status: '{{ $item->status }}'
                                         })"
@@ -105,14 +107,20 @@
 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold mb-1">ID Pengajuan</label>
-                        <input type="text" x-model="detailPengajuan.id" readonly
+                        <label class="block text-sm font-semibold mb-1">Kode Pengajuan</label>
+                        <input type="text" x-model="detailPengajuan.kode" readonly
                             class="w-full border rounded-lg px-4 py-2 bg-gray-100">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Topik</label>
                         <input type="text" x-model="detailPengajuan.topik" readonly
                             class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Feedback dari Admin</label>
+                        <div class="w-full bg-gray-100 border rounded-lg px-4 py-2 text-sm text-gray-800 min-h-[72px]">
+                            <span x-text="detailPengajuan.feedback || '-'"></span>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Dokumen Pendukung</label>
@@ -159,6 +167,8 @@
                     topik: '',
                     dokumen: '',
                     status: '',
+                    kode: '',
+                    feedback: '',
                 },
                 openDetail(data) {
                     this.detailPengajuan = data;
