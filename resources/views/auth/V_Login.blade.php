@@ -15,8 +15,8 @@
 
         <!-- Notifikasi Login Gagal -->
         @if (session('failed'))
-            <div data-login-alert
-                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" data-login-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up transition-all duration-500 ease-in-out">
                 <!-- Logo -->
                 <div
                     class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
@@ -27,7 +27,7 @@
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
                         <h3 class="text-lg font-bold">Alert!</h3>
-                        <button onclick="this.closest('div.fixed').remove()"
+                        <button @click="show = false"
                             class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
                     </div>
                     <p class="text-sm mt-1">{{ session('failed') }}</p>
@@ -37,9 +37,8 @@
 
         <!-- Notifikasi Validasi -->
         @if ($errors->any())
-            <div data-error-alert
-                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
-
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" data-error-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up transition-all duration-500 ease-in-out">
                 <!-- Logo -->
                 <div
                     class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
@@ -50,7 +49,7 @@
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
                         <h3 class="text-lg font-bold">Alert!</h3>
-                        <button onclick="this.closest('div.fixed').remove()"
+                        <button @click="show = false"
                             class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
                     </div>
                     <ul class="text-sm mt-1 list-disc list-inside">

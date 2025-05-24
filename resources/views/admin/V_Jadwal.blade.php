@@ -10,8 +10,9 @@
 
         <!-- Notifikasi Sukses -->
         @if (session('success'))
-            <div data-success-alert
-                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" data-success-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up transition-all duration-500 ease-in-out">
+
                 <!-- Logo -->
                 <div
                     class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
@@ -22,7 +23,7 @@
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
                         <h3 class="text-lg font-bold">Berhasil!</h3>
-                        <button onclick="this.closest('div.fixed').remove()"
+                        <button @click="show = false"
                             class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
                     </div>
                     <p class="text-sm mt-1">{{ session('success') }}</p>
@@ -32,8 +33,8 @@
 
         <!-- Notifikasi Gagal Validasi -->
         @if ($errors->any())
-            <div data-error-alert
-                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" data-error-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up transition-all duration-500 ease-in-out">
 
                 <!-- Logo -->
                 <div
@@ -45,7 +46,7 @@
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
                         <h3 class="text-lg font-bold">Alert!</h3>
-                        <button onclick="this.closest('div.fixed').remove()"
+                        <button @click="show = false"
                             class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
                     </div>
                     <ul class="text-sm mt-1 list-disc list-inside">
@@ -386,11 +387,15 @@
                 </template>
 
                 <template x-for="(peserta, index) in pesertaList" :key="index">
-                    <li class="pb-2 text-gray-800">
-                        <span class="font-semibold">Peserta <span x-text="index + 1"></span>:</span>
-                        <span x-text="peserta.nama"></span>
-                        <span class="block text-sm text-gray-500 ml-4">oleh: <span x-text="peserta.user"></span></span>
-                    </li>
+                    <div class="pb-2 text-gray-800">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="font-semibold">Peserta <span x-text="index + 1"></span>:</span>
+                                <span x-text="peserta.nama"></span>
+                            </div>
+                            <div class="text-sm text-gray-500 italic">oleh: <span x-text="peserta.user"></span></div>
+                        </div>
+                    </div>
                 </template>
 
                 <div class="flex justify-end mt-6">

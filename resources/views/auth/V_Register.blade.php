@@ -15,8 +15,8 @@
 
         <!-- Notifikasi Sukses -->
         @if (session('success'))
-            <div data-success-alert
-                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" data-success-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-green-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up transition-all duration-500 ease-in-out">
                 <!-- Logo -->
                 <div
                     class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
@@ -27,7 +27,7 @@
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
                         <h3 class="text-lg font-bold">Berhasil!</h3>
-                        <button onclick="this.closest('div.fixed').remove()"
+                        <button @click="show = false"
                             class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
                     </div>
                     <p class="text-sm mt-1">{{ session('success') }}</p>
@@ -37,9 +37,8 @@
 
         <!-- Notifikasi Validasi -->
         @if ($errors->any())
-            <div data-error-alert
-                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up">
-
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" data-error-alert
+                class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-red-600 text-white rounded-xl p-4 shadow-lg flex items-start gap-3 animate-slide-up transition-all duration-500 ease-in-out">
                 <!-- Logo -->
                 <div
                     class="flex-shrink-0 bg-transparent rounded-full w-14 h-14 flex items-center justify-center overflow-hidden">
@@ -50,7 +49,7 @@
                 <div class="flex-grow">
                     <div class="flex justify-between items-center">
                         <h3 class="text-lg font-bold">Alert!</h3>
-                        <button onclick="this.closest('div.fixed').remove()"
+                        <button @click="show = false"
                             class="text-white hover:text-gray-200 text-xl leading-none">&times;</button>
                     </div>
                     <ul class="text-sm mt-1 list-disc list-inside">
@@ -107,7 +106,8 @@
                     </div>
                     <div class="w-1/2">
                         <label class="block mb-1 text-gray-700 font-medium">Nomor Telepon</label>
-                        <input type="text" name="telepon" placeholder="Masukkan nomor telepon" value="{{ old('telepon') }}"
+                        <input type="text" name="telepon" placeholder="Masukkan nomor telepon"
+                            value="{{ old('telepon') }}"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-green-500">
                     </div>
                 </div>
