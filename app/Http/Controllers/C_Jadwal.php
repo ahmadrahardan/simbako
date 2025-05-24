@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class C_Jadwal extends Controller
 {
@@ -150,57 +151,64 @@ class C_Jadwal extends Controller
 
     public function daftar(Request $request)
     {
-        $rules = [
+        $validated = $request->validate([
             'jadwal_id' => 'required|exists:jadwal,id',
             'pendaftar_1' => 'nullable|string|max:64',
             'pendaftar_2' => 'nullable|string|max:64',
             'pendaftar_3' => 'nullable|string|max:64',
             'pendaftar_4' => 'nullable|string|max:64',
             'pendaftar_5' => 'nullable|string|max:64',
-        ];
+        ]);
 
-        $messages = [
-            'jadwal_id.required' => 'ID jadwal tidak ditemukan.',
-            'jadwal_id.exists' => 'Jadwal tidak valid.',
-            'pendaftar_1.max' => 'Nama terlalu panjang.',
-            'pendaftar_2.max' => 'Nama terlalu panjang.',
-            'pendaftar_3.max' => 'Nama terlalu panjang.',
-            'pendaftar_4.max' => 'Nama terlalu panjang.',
-            'pendaftar_5.max' => 'Nama terlalu panjang.',
-        ];
+        $jumlahPeserta = collect(range(1, 5))
+            ->map(fn($i) => $validated["pendaftar_$i"] ?? null)
+            ->filter()
+            ->count();
 
-        $validated = $request->validate($rules, $messages);
-
-        // Validasi minimal satu nama diisi
-        if (
-            empty($validated['pendaftar_1']) &&
-            empty($validated['pendaftar_2']) &&
-            empty($validated['pendaftar_3']) &&
-            empty($validated['pendaftar_4']) &&
-            empty($validated['pendaftar_5'])
-        ) {
+        if ($jumlahPeserta === 0) {
             return back()
                 ->withErrors(['pendaftar_1' => 'Belum ada nama yang didaftarkan!'])
                 ->withInput();
         }
 
-        // Simpan ke tabel `pendaftaran`
-        $pendaftaran = Pendaftaran::create([
-            'user_id' => auth()->id(),
-            'jadwal_id' => $validated['jadwal_id'],
-        ]);
+        try {
+            DB::transaction(function () use ($validated, $jumlahPeserta) {
+                // Lock baris jadwal
+                $jadwal = DB::table('jadwal')
+                    ->where('id', $validated['jadwal_id'])
+                    ->lockForUpdate()
+                    ->first();
 
-        // Simpan peserta ke tabel `peserta`
-        foreach (range(1, 5) as $i) {
-            $nama = $validated["pendaftar_$i"] ?? null;
-            if ($nama) {
-                Peserta::create([
-                    'pendaftaran_id' => $pendaftaran->id,
-                    'nama' => $nama,
+                if ($jadwal->kuota < $jumlahPeserta) {
+                    throw new \Exception('Kuota tidak mencukupi. Sisa kuota hanya ' . $jadwal->kuota);
+                }
+
+                // Simpan pendaftaran
+                $pendaftaran = \App\Models\Pendaftaran::create([
+                    'user_id' => auth()->id(),
+                    'jadwal_id' => $jadwal->id,
                 ]);
-            }
-        }
 
-        return back()->with('success', 'Berhasil mendaftar!');
+                // Simpan peserta
+                foreach (range(1, 5) as $i) {
+                    $nama = $validated["pendaftar_$i"] ?? null;
+                    if ($nama) {
+                        \App\Models\Peserta::create([
+                            'pendaftaran_id' => $pendaftaran->id,
+                            'nama' => $nama,
+                        ]);
+                    }
+                }
+
+                // Kurangi kuota
+                \App\Models\Jadwal::where('id', $jadwal->id)->update([
+                    'kuota' => $jadwal->kuota - $jumlahPeserta,
+                ]);
+            });
+
+            return back()->with('success', 'Berhasil mendaftar!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['pendaftar_1' => $e->getMessage()]);
+        }
     }
 }
