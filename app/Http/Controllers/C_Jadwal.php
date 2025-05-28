@@ -69,6 +69,7 @@ class C_Jadwal extends Controller
             'topik' => 'required|string|max:64',
             'deskripsi' => 'required|string|max:500',
             'tanggal' => 'required|date',
+            'pukul' => 'required|date_format:H:i',
             'lokasi' => 'required|string|max:64',
             'kuota' => 'required|string',
         ];
@@ -80,6 +81,8 @@ class C_Jadwal extends Controller
             'deskripsi.max' => 'Deskripsi terlalu panjang.',
             'tanggal.required' => 'Tanggal belum diisi!',
             'tanggal.date' => 'Format tanggal tidak valid.',
+            'pukul.required' => 'Waktu pelatihan belum diisi!',
+            'pukul.date_format' => 'Format waktu tidak valid.',
             'lokasi.required' => 'Lokasi belum diisi!',
             'lokasi.max' => 'Lokasi terlalu panjang.',
             'kuota.required' => 'kuota peserta belum diisi!',
@@ -92,6 +95,7 @@ class C_Jadwal extends Controller
             'topik' => $validated['topik'],
             'deskripsi' => $validated['deskripsi'],
             'tanggal' => $validated['tanggal'],
+            'pukul' => $validated['pukul'],
             'lokasi' => $validated['lokasi'],
             'kuota' => $validated['kuota'],
         ]);
@@ -110,6 +114,7 @@ class C_Jadwal extends Controller
             'topik' => 'required|string|max:64',
             'deskripsi' => 'required|string|max:500',
             'tanggal' => 'required|date',
+            'pukul' => 'required|date_format:H:i',
             'lokasi' => 'required|string|max:64',
             'kuota' => 'required|string',
         ];
@@ -121,6 +126,8 @@ class C_Jadwal extends Controller
             'deskripsi.max' => 'Deskripsi terlalu panjang.',
             'tanggal.required' => 'Tanggal belum diisi!',
             'tanggal.date' => 'Format tanggal tidak valid.',
+            'pukul.required' => 'Waktu pelatihan belum diisi!',
+            'pukul.date_format' => 'Format waktu tidak valid.',
             'lokasi.required' => 'Lokasi belum diisi!',
             'lokasi.max' => 'Lokasi terlalu panjang.',
             'kuota.required' => 'kuota peserta belum diisi!',
@@ -132,6 +139,7 @@ class C_Jadwal extends Controller
         $jadwal->topik = $validated['topik'];
         $jadwal->deskripsi = $validated['deskripsi'];
         $jadwal->tanggal = $validated['tanggal'];
+        $jadwal->pukul = $validated['pukul'];
         $jadwal->lokasi = $validated['lokasi'];
         $jadwal->kuota = $validated['kuota'];
 

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('topik');
             $table->text('deskripsi');
             $table->date('tanggal');
+            $table->time('pukul');
             $table->string('lokasi');
             $table->string('kuota');
             $table->timestamps();

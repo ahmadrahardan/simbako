@@ -115,8 +115,12 @@
                             class="bg-white/10 border border-white/30 backdrop-blur-md h-[110px] rounded-xl p-5 text-white">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-sm text-white/70"><i class="fa fa-calendar mr-1"></i>
-                                        {{ $item->tanggal }}</p>
+                                    <div class="flex gap-3">
+                                        <p class="text-sm text-white/70"><i class="fa fa-calendar mr-1"></i>
+                                            {{ $item->tanggal }}</p>
+                                        <p class="text-sm text-white/70"><i class="fas fa-clock mr-1"></i>
+                                            {{ $item->pukul }}</p>
+                                    </div>
                                     <h4 class="text-lg font-semibold">{{ $item->topik }}</h4>
                                     <p class="text-sm text-white/70"><i class="fa fa-map-marker mr-1"></i>
                                         {{ $item->lokasi }}</p>
@@ -133,6 +137,7 @@
                                         topik: '{{ $item->topik }}',
                                         deskripsi: '{{ $item->deskripsi }}',
                                         tanggal: '{{ $item->tanggal }}',
+                                        pukul: '{{ $item->pukul }}',
                                         lokasi: '{{ $item->lokasi }}',
                                         kuota: '{{ $item->kuota }}'
                                     })"
@@ -185,10 +190,17 @@
                         <textarea x-model="detailJadwal.deskripsi" readonly class="w-full border rounded-lg px-4 py-2 bg-gray-100 resize-none"
                             rows="3"></textarea>
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Tanggal</label>
-                        <input type="text" x-model="detailJadwal.tanggal" readonly
-                            class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                    <div class="flex gap-8">
+                        <div class="w-1/2">
+                            <label class="block text-sm font-semibold mb-1">Tanggal</label>
+                            <input type="text" x-model="detailJadwal.tanggal" readonly
+                                class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                        </div>
+                        <div class="w-1/2">
+                            <label class="block text-sm font-semibold mb-1">Pukul</label>
+                            <input type="text" x-model="detailJadwal.pukul" readonly
+                                class="w-full border rounded-lg px-4 py-2 bg-gray-100">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Lokasi</label>
@@ -288,6 +300,7 @@
                     topik: '',
                     deskripsi: '',
                     tanggal: '',
+                    pukul: '',
                     lokasi: '',
                     kuota: '',
                 },

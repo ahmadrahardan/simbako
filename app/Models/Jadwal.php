@@ -15,7 +15,7 @@ class Jadwal extends Model
 
     protected $table = 'jadwal';
 
-    protected $fillable = ['user_id', 'topik', 'deskripsi', 'tanggal', 'lokasi', 'kuota'];
+    protected $fillable = ['user_id', 'topik', 'deskripsi', 'tanggal', 'pukul', 'lokasi', 'kuota'];
 
     public function user(): BelongsTo
     {
