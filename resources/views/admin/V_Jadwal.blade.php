@@ -118,7 +118,7 @@
                                         <p class="text-sm text-white/70"><i class="fa fa-calendar mr-1"></i>
                                             {{ $item->tanggal }}</p>
                                         <p class="text-sm text-white/70"><i class="fas fa-clock mr-1"></i>
-                                            {{ $item->pukul }}</p>
+                                            {{ \Carbon\Carbon::createFromFormat('H:i:s', $item->pukul)->format('H:i') }}</p>
                                     </div>
                                     <h4 class="text-lg font-semibold">{{ $item->topik }}</h4>
                                     <p class="text-sm text-white/70"><i class="fa fa-map-marker mr-1"></i>
