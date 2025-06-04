@@ -69,7 +69,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <h3 class="text-lg font-semibold">Jadwal Pelatihan</h3>
-                        <p class="text-sm text-white/80">Temukan jadwal pelatihan sesuai dengan agendamu!</p>
+                        <p class="text-sm text-white/80">*Pendaftaran pelatihan ditutup H-1 Pelaksaan Kegiatan!</p>
                     </div>
                     <!-- Filter Bulan & Tahun + Tambahan Opsi Terbaru -->
                     @php
@@ -119,19 +119,33 @@
                                         <p class="text-sm text-white/70"><i class="fa fa-calendar mr-1"></i>
                                             {{ $item->tanggal }}</p>
                                         <p class="text-sm text-white/70"><i class="fas fa-clock mr-1"></i>
-                                            {{ \Carbon\Carbon::createFromFormat('H:i:s', $item->pukul)->format('H:i') }}</p>
+                                            {{ \Carbon\Carbon::createFromFormat('H:i:s', $item->pukul)->format('H:i') }}
+                                        </p>
                                     </div>
                                     <h4 class="text-lg font-semibold">{{ $item->topik }}</h4>
                                     <p class="text-sm text-white/70"><i class="fa fa-map-marker mr-1"></i>
                                         {{ $item->lokasi }}</p>
                                 </div>
                                 <div class="flex items-center justify-between gap-5">
+                                    @php
+                                        $jadwalTanggal = \Carbon\Carbon::parse($item->tanggal);
+                                        $limitDaftar = $jadwalTanggal->copy()->subDay();
+                                        $today = \Carbon\Carbon::today();
+                                    @endphp
+
                                     @if (in_array($item->id, $sudahDaftar))
-                                        <button disabled class="bg-gray-400 text-white px-4 py-1 rounded-md">Terdaftar</button>
+                                        <button disabled
+                                            class="bg-gray-400 text-white px-4 py-1 rounded-md">Terdaftar</button>
+                                    @elseif ($today->gte($limitDaftar))
+                                        <button disabled
+                                            class="bg-gray-400 text-white px-4 py-1 rounded-md opacity-50 cursor-not-allowed">
+                                            Pendaftaran Ditutup
+                                        </button>
                                     @else
                                         <button @click="openDaftar('{{ $item->id }}')"
                                             class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded-md">Daftar</button>
                                     @endif
+
                                     <button
                                         @click="openDetail({
                                         topik: '{{ $item->topik }}',
@@ -232,7 +246,8 @@
 
                 <h2 class="text-2xl font-bold text-center mb-6">Daftar Pelatihan</h2>
 
-                <form action="{{ route('jadwal.daftar') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <form action="{{ route('jadwal.daftar') }}" method="POST" enctype="multipart/form-data"
+                    class="space-y-4">
                     @csrf
                     <input type="hidden" name="jadwal_id" :value="jadwalId">
                     <input type="hidden" name="modal" value="daftar">

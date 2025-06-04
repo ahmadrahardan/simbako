@@ -69,7 +69,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <h3 class="text-lg font-semibold">Jadwal Pelatihan</h3>
-                        <p class="text-sm text-white/80">Temukan jadwal pelatihan sesuai dengan agendamu!</p>
+                        <p class="text-sm text-white/80">*Pendaftaran pelatihan ditutup H-1 Pelaksaan Kegiatan!</p>
                     </div>
                     <!-- Filter Bulan & Tahun + Tambahan Opsi Terbaru -->
                     @php
