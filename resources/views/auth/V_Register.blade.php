@@ -152,6 +152,8 @@
                 </div>
             </form>
         </div>
+        <!-- Footer -->
+        @include('master.footer')
     </section>
     <script>
         if (performance.getEntriesByType("navigation")[0].type === "back_forward") {

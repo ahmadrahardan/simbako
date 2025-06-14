@@ -21,6 +21,8 @@
             </a>
         </div>
     </div>
+    <!-- Footer -->
+    @include('master.footer')
 </section>
 
 @endsection

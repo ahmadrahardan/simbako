@@ -41,6 +41,20 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
+            'nama' => 'Besuki Raya Cigar',
+            'username' => 'besukirayacigar',
+            'email' => 'besukiraya@gmail.com',
+            'password' => Hash::make('user4321'),
+            'telepon' => '081272030614',
+            'siinas' => '12345678901234569',
+            'kbli' => '12344',
+            'alamat' => 'Jl. Hayam Wuruk No. 139, Kec. Kaliwates, Kabupaten Jember, Jawa Timur 68131',
+            'email_verified_at' => now(),
+            'remember_token' => Str::random(10),
+            'verifikasi' => true,
+        ]);
+
+        User::create([
             'nama' => 'Villiger Cigars',
             'username' => 'villigercigars',
             'email' => 'villigercigars@gmail.com',

@@ -18,12 +18,17 @@ class C_Register extends Controller
         $rules = [
             'nama' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                'required',
+                'email',
+                'regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/',
+                'unique:users,email',
+            ],
             'telepon' => 'required|digits_between:12,16',
             'kbli' => 'required|digits:5',
             'siinas' => 'required|digits:17',
             'alamat' => 'required|string|max:255',
-            'password' => 'required|string|min:8|max:8|confirmed',
+            'password' => 'required|string|min:8|max:10|confirmed',
         ];
 
         $messages = [
@@ -33,6 +38,7 @@ class C_Register extends Controller
             'email.required' => 'Email belum terisi!',
             'email.email' => 'Format email tidak valid!',
             'email.unique' => 'Email sudah digunakan!',
+            'email.regex' => 'Email harus menggunakan domain @gmail.com.',
             'telepon.required' => 'Nomor telepon belum diisi!',
             'telepon.digits_between' => 'Nomor telepon tidak valid!',
             'kbli.required' => 'KBLI wajib diisi!',
@@ -42,7 +48,7 @@ class C_Register extends Controller
             'alamat.required' => 'Alamat wajib diisi!',
             'password.required' => 'Password belum terisi!',
             'password.min' => 'Password minimal 8 karakter!',
-            'password.max' => 'Password maksimal 8 karakter!',
+            'password.max' => 'Password maksimal 10 karakter!',
             'password.confirmed' => 'Konfirmasi password tidak sesuai!',
         ];
 
@@ -59,6 +65,6 @@ class C_Register extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return redirect('/register')->with('success', 'Mohon tunggu verifikasi dari admin 2x24 jam untuk dapat login.');
+        return redirect('/register')->with('success', 'Mohon tunggu verifikasi dari admin 2x24 jam untuk dapat login. Jika dalam 2x24 jam masih belum terverifikasi, silahkan menghubungi nomor yang tertera di bawah.');
     }
 }
